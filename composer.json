@@ -1,7 +1,17 @@
 {
-    "autoload":{
-        "psr-4":{
-        "MyApp\\":"src/"
+    "name": "dell/testcrud",
+    "description": "this library perform crud operation in php",
+    "type": "MIT",
+    "autoload": {
+        "psr-4": {
+            "MyApp\\": "src/"
         }
-    }
+    },
+    "authors": [
+        {
+            "name": "Rashid Farid"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
 }

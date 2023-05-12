@@ -7,5 +7,4 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
-    'MyApp\\Game\\Player\\Player' => $baseDir . '/src/Game/Player/Player.php',
 );

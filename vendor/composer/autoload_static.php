@@ -22,7 +22,6 @@ class ComposerStaticInit077946b03f70cfffb866cb0d6efa6e3c
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'MyApp\\Game\\Player\\Player' => __DIR__ . '/../..' . '/src/Game/Player/Player.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

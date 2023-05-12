@@ -1,7 +1,8 @@
 {
-    "name": "dell/testcrud",
+    "name": "PHP_Crud_Operational",
     "description": "this library perform crud operation in php",
-    "type": "MIT",
+    "type": "library",
+    "license":"MIT",
     "autoload": {
         "psr-4": {
             "MyApp\\": "src/"

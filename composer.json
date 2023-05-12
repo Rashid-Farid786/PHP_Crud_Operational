@@ -10,7 +10,8 @@
     },
     "authors": [
         {
-            "name": "Rashid Farid"
+            "name": "Rashid Farid",
+            "email":"rashidfarid40@gmail.com"
         }
     ],
     "minimum-stability": "stable",

@@ -1,0 +1,28 @@
+.cruderror,.crudsuccess,.crudwhite{
+    max-width:80%;
+    padding:5px 20px;
+    border-radius:10px;
+    position:fixed;
+    top:2%;
+    left:20%;
+    transform:translateX(-50%);
+    z-index:10000;
+    display:flex;
+    font-size:40px;
+    align-items:center;
+    align-content:center;
+    justify-content:center;
+    transform:translate(-10%,-10%);
+}
+.cruderror{
+    color:rgba(255,0,0,1);
+    background:rgba(150,0,0,0.3);
+}
+.crudsuccess{
+    color:rgba(0,255,0,1);
+    background:rgba(0,150,0,0.5);
+}
+.crudwhite{
+    color:white;
+    background: #222222;
+}

@@ -8,11 +8,14 @@
 </head>
 <body>
     <?php
-    include_once realpath("vendor/autoload.php");
-    use MyApp\Game\Player\Player;
-    use MyApp\Game\GameController;
-    $player=new Player();
-    $gameController=new GameController();
+     include_once realpath("vendor/autoload.php");
+     use MyApp\Connection;
+    //  use MyApp\Testing;
+    //  new Testing();
+     $con=new Connection("localhost","root","","testing");
+     $con->settable("data");
+     $con->showtables();
+     $con->update(["name"=>"Rashid Farid","email"=>"test@gmail.com","password"=>"1234"],2);
     ?>
 </body>
 </html>

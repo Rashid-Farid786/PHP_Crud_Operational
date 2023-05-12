@@ -1,73 +1,11 @@
 <?php
 namespace MyApp;
-?>
-<!-- Pup up css code -->
-<style>
-    .cruderror,.crudsuccess,.crudwhite{
-        max-width:80%;
-        padding:5px 20px;
-        border-radius:10px;
-        position:fixed;
-        top:2%;
-        left:20%;
-        transform:translateX(-50%);
-        z-index:10000;
-        display:flex;
-        font-size:40px;
-        align-items:center;
-        align-content:center;
-        justify-content:center;
-        transform:translate(-10%,-10%);
-    }
-    .cruderror{
-        color:rgba(255,0,0,1);
-        background:rgba(150,0,0,0.3);
-    }
-    .crudsuccess{
-        color:rgba(0,255,0,1);
-        background:rgba(0,150,0,0.5);
-    }
-    .crudwhite{
-        color:white;
-        background: #222222;
-    }
-</style>
-<!-- pup up code -->
-<script>
-    function message(message,status){
-        let tag=document.createElement("h3");
-        let text=document.createTextNode(message);
-        tag.classList.add(status);
-        tag.appendChild(text);
-        document.write(tag.outerHTML);
-        setTimeout(function(){
-            tag.remove();
-        },1000);
-    }
-</script>
-<?php
- error_reporting(0);
- ini_set("display_errors",0);
-function errorHandler($errorno,$errorstr,$errorfile,$errorline){
-    echo "<script>message('Error : {$errorstr} , the line number is : {$errorline} and the file is : ".basename($errorfile)."','crudwhite');</script>";
-}
-function exeptionHandler(Throwable $exception){
-   echo '<script>message("Error : '.$exception->getmessage().' on line number is : '.$exception->getLine().' and file is : '.basename($exception->getfile()).'","crudwhite");</script>';
-}
-set_error_handler("errorHandler");
-set_exception_handler("exeptionHandler");
-// class obj{
-//     public $status;
-//     public $message;
-//     public $error;
-//     public $data;
-//     public function __construct(bool $status,string $message,string $error,array $data){
-//         $this->status=$status;
-//         $this->message=$message;
-//         $this->error=$error;
-//         $this->data=$data;
-//     }
-// }
+
+include_once __DIR__."/Obj.php";
+// include_once __DIR__."/Error.php";
+use MyApp\Obj;
+use MyApp;
+
 class Connection{
     private $user_name;
     private $host_name;
@@ -75,6 +13,7 @@ class Connection{
     private $db_name;
     private $con;
     private $table;
+    private $id;
     private $checkstatus;
     // create Connection
     public function __construct($host,$user,$password,$db){
@@ -83,7 +22,7 @@ class Connection{
             $this->user_name=$user;
             $this->password=$password;
             $this->db_name=$db;
-            $this->con= new mysqli($this->host_name,$this->user_name,$this->password,$this->db_name);
+            $this->con=mysqli_connect($this->host_name,$this->user_name,$this->password,$this->db_name);
             if(!$this->con->connect_error){
                 $this->checkstatus=true;
             }else{
@@ -95,6 +34,13 @@ class Connection{
 
     // select database table
     public function settable($table){
+        if($this->checkstatus){
+        $this->table=$table;
+        }else{
+            echo "Connect error";
+        }
+    }
+    public function changetable($table){
         if($this->checkstatus){
         $this->table=$table;
         }else{
@@ -117,6 +63,9 @@ class Connection{
                 return $this->convert(true,"Query Error",$this->con->error,"");
             }
         }
+    }
+    public function adddata(){
+
     }
 
     // Check Connection Status
@@ -158,8 +107,76 @@ class Connection{
         $questionMark="";
         $datatype="";
         foreach($arr as $key=>$value){
+                // store array values in values variable
                 $values.="'{$value}' ,";
+                // store question marks in variable
                 $questionMark.="? ,";
+                // Pickup data datatype
+                switch(gettype($value)){
+                    case "string":
+                    $datatype .='s';
+                    break;
+                    case 'integer':
+                    $datatype.='i';
+                    case 'boolean':
+                    $datatype.='b';
+                    break;
+                    default:
+                }
+        }
+        $passquestionmark=trim($questionMark,',');
+        $passvalues=trim($values,',');
+        $passarray=explode(',',$passvalues);
+        list($name,$email,$password)=$passarray;
+        $passdatatype=trim($datatype);
+        $sql="INSERT INTO {$this->table}({$keys}) VALUES({$passquestionmark})";
+        $e=$this->con->prepare($sql);
+        // echo $passdatatype.",".$passvalues;die();
+        $e->bind_param($passquestionmark,$name,$email,$password);
+        $e->execute();
+        if(!$this->con->error){
+            return $this->convert(true,"success","",(array)$this->con->insert_id);
+        }else{
+            return $this->convert(false,"Data Not Inserted",$this->con->error,'');
+        }
+    }
+    public function mixer(array $arr,array $file,string $filepath):array{
+        // upload image code
+        $error = array();
+		$name = $_FILES['file']['name'];
+		$size = $_FILES['file']['size'];
+		$tempname = $_FILES['file']['tmp_name'];
+		$type = $_FILES['file']['type'];
+		$refrence = explode('.', $name);
+		$file_exe = end($refrence);
+		$extention = array('jpeg', 'jpg', 'png', 'pdf', 'docx');
+		$new_name = time() . basename($name);
+		$fileupload = "../upload/" . $new_name;
+		if (in_array($file_exe, $extention) === false) {
+			$error[] = "please select valid iamge jpg or png";
+		}
+		if ($size > 3145728) {
+			$error[] = "uploaded image 3MB or lower";
+		}
+		if (empty($error == true)) {
+			move_uploaded_file($tempname, $fileupload);
+		} else {
+			echo "<script>message('".$error[0]."')</script>";
+			die();
+		}
+        // end uploadI Image
+
+        $k=array_keys($arr);
+        $keys=implode(",",$k);
+        $values="";
+        $questionMark="";
+        $datatype="";
+        foreach($arr as $key=>$value){
+                // store array values in values variable
+                $values.="'{$value}' ,";
+                // store question marks in variable
+                $questionMark.="? ,";
+                // Pickup data datatype
                 switch(gettype($value)){
                     case "string":
                     $datatype .='s';
@@ -188,9 +205,19 @@ class Connection{
             return $this->convert(false,"Data Not Inserted",$this->con->error,'');
         }
     }
+     public function colums():array{
+        $sql="SHOW ALL COLUMS FROM {$this->table}";
+        $result=$this->con->prepare($sql);
+        $result->execute();
+        if(!$this->con->error){
+            return $this->convert(true,"success","",$result->get_result()->fetch_all());
+        }else{
+            return $this->convert(false,"error",$this->con->error,"");
+        }
+     }
 
     // Update Already Exist Data Fron DataBase Table
-    public function update($arr,$id){
+    public function update(array $arr,int $id):array{
         $datatype="";
         $keys="";
         $values="";
@@ -213,6 +240,7 @@ class Connection{
         $ve=trim($values,",");
         $vve=trim($ve,"'");
         $passarray=explode(',',$vve);
+        print_r($passarray);die();
         list($name,$email,$password)=$passarray;
         ($datatype.",".$values);
         $sql="UPDATE {$this->table} SET ".trim($keys,',')." WHERE id={$id}";
@@ -228,7 +256,7 @@ class Connection{
     }
 
     // Delete Already Exist Data Fron DataBase Table
-    public function delete($id){
+    public function delete(int $id):array{
         $sql="DELETE FROM {$this->table} WHERE id={$id}";
         $e=$this->con->prepare($sql);
         $e->execute();
@@ -240,8 +268,58 @@ class Connection{
     }
 
     // Check Selected Data Base Table
-    public function gettable(){
+    public function gettable():string{
         return $this->table;
+    }
+    private function foreach($data){
+        $edata=[];
+        foreach($data as $key=>$value){
+        }
+    }
+    
+    public function showtables():void{
+        $sql="SHOW FIELDS FROM {$this->table}";
+        $result=$this->con->prepare($sql);
+        $result->execute();
+        $e=$result->get_result()->fetch_all(MYSQLI_ASSOC);
+        if(!$this->con->error){
+        $data="<table class='crudtable'><tr class='crudtr' style='width:100%;'>";
+        foreach($e as $key=>$value){
+            $data.="<th>".$value['Field']."</th>";
+        }
+        $data.="<th>Update</th><th>Delete</th></tr>";
+    }
+    
+   $result1=$this->all();
+   foreach($result1 as $value){
+    if(is_array($value)){
+    foreach($value as $value1){
+    $data.="<form action='{$_SERVER['PHP_SELF']}' method='get'><tr>";
+    if(is_array($value1) OR (is_object($value1))){
+    foreach($value1 as $value2){
+        if($key == 0 && $value !=null){
+            $data .="<td>".str_replace("'",'',$value2)."</td>";
+        }
+        elseif((is_string($value2))){
+            if(strlen($value2)>100){
+                $data .="<td>".str_replace("'",'',substr($value2,0,100))."</td>";
+            }
+        }
+        $str=$value2??"";
+        $data .="<td>".str_replace("'",'',$str)."</td>";
+    }
+    }
+    $data.="<td><button><input type='submit' hidden name='update' value=''>&#8634;</button></td><td><button><input type='hidden'  name='delete' value='".$this->id."'>X</button></td></tr></form>";
+    }
+}
+   }
+    $data.="</table>";
+    echo $data;
+
+    }
+
+    public function add(){
+
     }
 
     // Cover Array To Object
@@ -266,17 +344,5 @@ class Connection{
           $this->checkstatus=false;
         }
     }
-}
-function breake_arry($arr){
-    $re;
-    foreach($arr as $key=>$value){
-        if(is_array($value)){
-                // array_push($re,$value1);
-                $re[$key]=$value;
-        }
-            // array_push($re,$value);
-            $re[$key]=$value;
-        }
-        return $re;
 }
 ?>

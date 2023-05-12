@@ -1,5 +1,5 @@
 {
-    "name": "PHP_Crud_Operational",
+    "name": "dell/PHP_Crud_Operational",
     "description": "this library perform crud operation in php",
     "type": "library",
     "license":"MIT",

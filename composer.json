@@ -1,6 +1,6 @@
 {
     "name": "rashidfarid/php_crud_operational",
-    "description": "this library Perform crud operations in php",
+    "description": "this library perforn crud operation in php",
     "type": "library",
     "license": "MIT",
     "autoload": {
@@ -10,9 +10,11 @@
     },
     "authors": [
         {
-            "name": "Rashid Farid"
+            "name": "Rashid Farif",
+            "email":"rashidfarid40@gmail.com"
         }
     ],
     "minimum-stability": "stable",
+    "prefer-stable": true,
     "require": {}
 }

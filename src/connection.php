@@ -240,12 +240,16 @@ class Connection{
         $ve=trim($values,",");
         $vve=trim($ve,"'");
         $passarray=explode(',',$vve);
-        print_r($passarray);die();
-        list($name,$email,$password)=$passarray;
+        $listvalue="";
+        foreach($passarray  as $key=>$v){
+            $listvalue.="$"."e".$key.", ";
+        }
+        $listpassvalue=trim(",",$listvalue);
+        list($listpassvalue)=$passarray;
         ($datatype.",".$values);
         $sql="UPDATE {$this->table} SET ".trim($keys,',')." WHERE id={$id}";
         $e=$this->con->prepare($sql);
-        $e->bind_param($pe,$name,$email,$password);
+        $e->bind_param($pe,$listpassvalue);
         $e->execute();
         if(!$this->con->error){
             return $this->convert(true,"Data Updated","",(array)["id"=>$id]);
@@ -283,33 +287,33 @@ class Connection{
         $result->execute();
         $e=$result->get_result()->fetch_all(MYSQLI_ASSOC);
         if(!$this->con->error){
-        $data="<table class='crudtable'><tr class='crudtr' style='width:100%;'>";
+        $data="<table class='crudtable' style='width:100%;'><tr class='crudtr' style='width:100%; margin-bottom:10px;'>";
         foreach($e as $key=>$value){
             $data.="<th>".$value['Field']."</th>";
         }
-        $data.="<th>Update</th><th>Delete</th></tr>";
+        $data.="<th style='text-align:center;'>Update</th><th>Delete</th></tr>";
     }
     
    $result1=$this->all();
    foreach($result1 as $value){
     if(is_array($value)){
     foreach($value as $value1){
-    $data.="<form action='{$_SERVER['PHP_SELF']}' method='get'><tr>";
+    $data.="<form action='{$_SERVER['PHP_SELF']}' method='get'><tr style='margin-bottom:10px;'>";
     if(is_array($value1) OR (is_object($value1))){
     foreach($value1 as $value2){
         if($key == 0 && $value !=null){
-            $data .="<td>".str_replace("'",'',$value2)."</td>";
+            $data .="<td style='text-align:center;'>".str_replace("'",'',$value2)."</td>";
         }
         elseif((is_string($value2))){
             if(strlen($value2)>100){
-                $data .="<td>".str_replace("'",'',substr($value2,0,100))."</td>";
+                $data .="<td style='text-align:center;'>".str_replace("'",'',substr($value2,0,100))."</td>";
             }
         }
         $str=$value2??"";
-        $data .="<td>".str_replace("'",'',$str)."</td>";
+        $data .="<td style='text-align:center;'>".str_replace("'",'',$str)."</td>";
     }
     }
-    $data.="<td><button><input type='submit' hidden name='update' value=''>&#8634;</button></td><td><button><input type='hidden'  name='delete' value='".$this->id."'>X</button></td></tr></form>";
+    $data.="<td style='text-align:center;'><button><input type='submit' hidden name='update' value=''>&#8634;</button></td><td style='text-align:center;'><button><input type='hidden'  name='delete' value='".$this->id."'>X</button></td></tr></form>";
     }
 }
    }

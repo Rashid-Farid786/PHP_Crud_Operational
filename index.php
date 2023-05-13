@@ -10,8 +10,6 @@
     <?php
      include_once realpath("vendor/autoload.php");
      use MyApp\Connection;
-    //  use MyApp\Testing;
-    //  new Testing();
      $con=new Connection("localhost","root","","testing");
      $con->settable("data");
      $con->showtables();

@@ -26,3 +26,7 @@
     color:white;
     background: #222222;
 }
+.active{
+    background:blue;
+    color:white;
+}

@@ -1,19 +1,26 @@
 <?php
 namespace MyApp{
-    // set_error_handler(function($errorno,$errorstr,$errorfile,$errorline){
-    //     echo "<script>message('Error : {$errorstr} , the line number is : {$errorline} and the file is : ".basename($errorfile)."','crudwhite');</script>";
-    // });
-    // set_exception_handler(function(Throwable $exception){
-    //     echo '<script>message("Error : '.$exception->getmessage().' on line number is : '.$exception->getLine().' and file is : '.basename($exception->getfile()).'","crudwhite");</script>';
-    //  });
+    set_error_handler(function($errorno,$errorstr,$errorfile,$errorline){
+        echo "<script>message('Error : {$errorstr} , the line number is : {$errorline} and the file is : ".basename($errorfile)."','crudwhite');</script>";
+    });
+    set_exception_handler(function(Throwable $exception){
+        echo '<script>message("Error : '.$exception->getmessage().' on line number is : '.$exception->getLine().' and file is : '.basename($exception->getfile()).'","crudwhite");</script>';
+     });
     ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
-    <style>
-        .active{
-            background:blue;
-            color:white;
-        }
-    </style>
+    <link rel="stylesheet" href="src/css/style.css">
+    <script>
+        function message(message,status){
+        let tag=document.createElement("h3");
+        let text=document.createTextNode(message);
+        tag.classList.add(status);
+        tag.appendChild(text);
+        document.write(tag.outerHTML);
+        setTimeout(function(){
+            tag.remove();
+        },1000);
+    }
+    </script>
     <?php
 class Obj{
     public $status;
@@ -36,6 +43,7 @@ class Connection{
     public $con;
     public $table;
     public $id;
+    public $data;
     public $checkstatus;
     public $offset=0;
     public $limit=100;
@@ -322,17 +330,17 @@ class Connection{
         $result->execute();
         $e=$result->get_result()->fetch_all(MYSQLI_ASSOC);
         if(!$this->con->error){
-        $data="<table class='crudtable table table-sm table-hover table-responsive-sm'><form action='{$_SERVER['PHP_SELF']}' method='get'>
+        $this->data="<table class='crudtable table table-sm table-hover table-responsive-sm'><form action='{$_SERVER['PHP_SELF']}' method='get'>
         ";?>
         <caption>All Records</caption>
         <?php
-        $data.="
+        $this->data.="
         <button class='m-2' type='submit'>Delete Selected Records</button>
         <thead class='thead-dark w-100'><tr><th class='text-center'>Delete</th>";
         foreach($e as $key=>$value){
-            $data.="<th scope='col' class='text-center'>".$value['Field']."</th>";
+            $this->data.="<th scope='col' class='text-center'>".$value['Field']."</th>";
         }
-        $data.="<th class='text-center'>Update</th><th class='text-center'>Delete</th></tr></thead>";
+        $this->data.="<th class='text-center'>Update</th><th class='text-center'>Delete</th></tr></thead>";
     }
     echo $sql="SELECT * FROM {$this->table} LIMIT {$this->offset},{$this->limit}";
     echo "<br>";
@@ -341,36 +349,43 @@ class Connection{
     if(is_array($value)){
     foreach($value as $value1){
         if(is_array($value1) OR (is_object($value1))){
-        $data.="<form action='{$_SERVER['PHP_SELF']}' method='get'><tr><td class='text-center'><input type='checkbox' name='checkbox'/></td>";
+            $this->data.="<form action='{$_SERVER['PHP_SELF']}' method='get'><tr><td class='text-center'><input type='checkbox' name='checkbox'/></td>";
     foreach($value1 as $value2){
         if($key == 0 && $value !=null){
-            $data .="<td class='text-center'>".str_replace("'",'',$value2)."</td>";
+            $this->data .="<td class='text-center'>".str_replace("'",'',$value2)."</td>";
         }
         elseif((is_string($value2))){
             if(strlen($value2)>100){
-                $data .="<td class='text-center'>".str_replace("'",'',substr($value2,0,100))."</td>";
+                $this->data .="<td class='text-center'>".str_replace("'",'',substr($value2,0,100))."</td>";
             }
         }
         $str=$value2??"";
-        $data .="<td class='text-center'>".str_replace("'",'',$str)."</td>";
+        $this->data .="<td class='text-center'>".str_replace("'",'',$str)."</td>";
     }
 
-    $data.="<td class='text-center'><form action='{$_SERVER['PHP_SELF']}' method='get'><button><input type='submit' hidden name='update' value='".$this->id."'>&#8634;</button></form></td><td class='text-center'><form action='{$_SERVER['PHP_SELF']}' method='get'><button><input type='hidden'  name='delete' value='".$this->id."'>X</button></form></td></tr>";
+    $this->data.="<td class='text-center'><form action='{$_SERVER['PHP_SELF']}' method='get'><button><input type='submit' hidden name='update' value='".$this->id."'>&#8634;</button></form></td><td class='text-center'><form action='{$_SERVER['PHP_SELF']}' method='get'><button><input type='hidden'  name='delete' value='".$this->id."'>X</button></form></td></tr>";
     }
     }
 }
    }
    
-$data.="</table>";
-
+   $this->data.="</table>";
+$previus;
+$nest;
+$pages=0;
+if(!isset($_GET['page'])){
+$pages=$_GET['page']?$_GET['page']:0;
+}
 if($this->pagination){
     $sql="SELECT * FROM {$this->table}";
         $e=$this->con->query($sql);
         if($e->num_rows>0){
     if(isset($_GET['page'])){
-         $this->offset=($_GET['page']-1)*$this->limit;
+         $this->offset=($pages-1)*$this->limit;
             $this->total_pages=ceil($e->num_rows/$this->limit);
             echo "Page set ".$e->num_rows;
+            $previus=$pages-1;
+            $nest=$pages+1;
                  
     }else{
          $this->offset=(0-1)*$this->limit;
@@ -380,7 +395,10 @@ if($this->pagination){
         }
                 
 
-$data.="<table class='table w-10 text-center'><nav class='page navigation example'><ul class='pagination list-group'><tr><td  class='page-item'><li' class='page-item'><a href='#' class='page-link'>Previus</a></td>"; 
+        $this->data.="<table class='table w-10 text-center'><nav class='page navigation example'><ul class='pagination list-group'><tr>";
+        if($pages>1){
+            $this->data.="<td  class='page-item'><li' class='page-item'><a href='{$_SERVER['PHP_SELF']}?page={$previus}' class='page-link'>Previus</a></td>"; 
+        }
 for($i=1;$i<=$this->total_pages;$i++){
     if($this->total_pages >=8){
 
@@ -395,11 +413,14 @@ for($i=1;$i<=$this->total_pages;$i++){
         $active="";
     }
 }
-     $data.="<td><li style='list-style:none;' class='page-item'><a href='{$_SERVER['PHP_SELF']}?page={$i}' class='page-link {$active}'>{$i}</a></li></td>";
+$this->data.="<td><li style='list-style:none;' class='page-item'><a href='{$_SERVER['PHP_SELF']}?page={$i}' class='page-link {$active}'>{$i}</a></li></td>";
 }
-    $data.="<td><li style='list-style:none;' class='page-item'><a href='#' class='page-link'>Next</a></li></td></ul></nav></tr></table>";
+if($pages < $this->total_pages){
+    $this->data.="<td><li style='list-style:none;' class='page-item'><a href='{$_SERVER['PHP_SELF']}?page={$nest}' class='page-link'>Next</a></li></td></ul></nav>";
+}
+$this->data.="</tr></table>";
 }   
-    echo $data;
+    echo $this->data;
 
     }
    

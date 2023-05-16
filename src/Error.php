@@ -1,9 +1,6 @@
 <?php
-namespace MyApp;
-class Error{
-    public function __construct(){
-        error_reporting(0);
- ini_set("display_errors",0);
+//         error_reporting(0);
+//  ini_set("display_errors",0);
 function errorHandler($errorno,$errorstr,$errorfile,$errorline){
     echo "<script>message('Error : {$errorstr} , the line number is : {$errorline} and the file is : ".basename($errorfile)."','crudwhite');</script>";
 }
@@ -12,6 +9,4 @@ function exeptionHandler(Throwable $exception){
 }
 set_error_handler("errorHandler");
 set_exception_handler("exeptionHandler");
-    }
-}
 ?>

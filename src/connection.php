@@ -1,20 +1,46 @@
 <?php
-namespace MyApp;
-
-include_once __DIR__."/Obj.php";
-// include_once __DIR__."/Error.php";
-use MyApp\Obj;
-use MyApp;
+namespace MyApp{
+    // set_error_handler(function($errorno,$errorstr,$errorfile,$errorline){
+    //     echo "<script>message('Error : {$errorstr} , the line number is : {$errorline} and the file is : ".basename($errorfile)."','crudwhite');</script>";
+    // });
+    // set_exception_handler(function(Throwable $exception){
+    //     echo '<script>message("Error : '.$exception->getmessage().' on line number is : '.$exception->getLine().' and file is : '.basename($exception->getfile()).'","crudwhite");</script>';
+    //  });
+    ?>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+    <style>
+        .active{
+            background:blue;
+            color:white;
+        }
+    </style>
+    <?php
+class Obj{
+    public $status;
+    public $message;
+    public $error;
+    public $data;
+    public function __construct(bool $status,string $message,string $error,array $data){
+        $this->status=$status;
+        $this->message=$message;
+        $this->error=$error;
+        $this->data=$data;
+    }
+}
 
 class Connection{
-    private $user_name;
-    private $host_name;
-    private $password;
-    private $db_name;
-    private $con;
-    private $table;
-    private $id;
-    private $checkstatus;
+    public $user_name;
+    public $host_name;
+    public $password;
+    public $db_name;
+    public $con;
+    public $table;
+    public $id;
+    public $checkstatus;
+    public $offset=0;
+    public $limit=100;
+    public $pagination=false;
+    public $total_pages;
     // create Connection
     public function __construct($host,$user,$password,$db){
         if(!$this->checkstatus){
@@ -74,7 +100,7 @@ class Connection{
     }
 
     // get Table Data By ID
-    public function find($id):array{
+    public function find(int $id):array{
         $sql="SELECT * FROM {$this->table} WHERE id=?";
         $e=$this->con->prepare($sql);
         $e->bind_param("i",$id);
@@ -101,41 +127,45 @@ class Connection{
 
     // insert Data In Database
     public function insert(array $arr):array{
-        $k=array_keys($arr);
-        $keys=implode(",",$k);
+        extract($arr);
+        $keys=implode(",",array_keys($arr));
+        // $Keys1="";
         $values="";
-        $questionMark="";
-        $datatype="";
+        // $questionMark="";
+        // $datatype="";
         foreach($arr as $key=>$value){
-                // store array values in values variable
-                $values.="'{$value}' ,";
-                // store question marks in variable
-                $questionMark.="? ,";
-                // Pickup data datatype
-                switch(gettype($value)){
-                    case "string":
-                    $datatype .='s';
-                    break;
-                    case 'integer':
-                    $datatype.='i';
-                    case 'boolean':
-                    $datatype.='b';
-                    break;
-                    default:
-                }
+            // store array values in values variable
+            $values.="'".$value."',";
+            // $values.=$$key.",";
+            // store question marks in variable
+            // $questionMark.="? ,";
+            // Pickup data datatype
+            // switch(gettype($value)){
+            //     case "string":
+            //         $datatype .='s';
+            //         break;
+            //         case 'integer':
+            //             $datatype.='i';
+            //             case 'boolean':
+            //         $datatype.='b';
+            //         break;
+            //         default:
+            //     }
         }
-        $passquestionmark=trim($questionMark,',');
-        $passvalues=trim($values,',');
-        $passarray=explode(',',$passvalues);
-        list($name,$email,$password)=$passarray;
-        $passdatatype=trim($datatype);
-        $sql="INSERT INTO {$this->table}({$keys}) VALUES({$passquestionmark})";
+        // $passquestionmark=trim($questionMark,',');
+        // $passvalues=trim($values,',');
+        // $passvaluess=trim($passvalues,"'");
+        // echo $passvalues;die();
+        // $passarray=explode(',',$passvalues);
+        // list($name,$email,$password)=$passarray;
+        // $passdatatype=trim($datatype);
+        $sql="INSERT INTO {$this->table} ({$keys}) VALUES(".trim($values,',').")";
         $e=$this->con->prepare($sql);
         // echo $passdatatype.",".$passvalues;die();
-        $e->bind_param($passquestionmark,$name,$email,$password);
+        // $e->bind_param($passdatatype,$passvaluess);
         $e->execute();
         if(!$this->con->error){
-            return $this->convert(true,"success","",(array)$this->con->insert_id);
+            return $this->convert(true,"success","",["id"=>$this->con->insert_id]);
         }else{
             return $this->convert(false,"Data Not Inserted",$this->con->error,'');
         }
@@ -197,7 +227,7 @@ class Connection{
         $sql="INSERT INTO {$this->table}({$keys}) VALUES({$passquestionmark})";
         $e=$this->con->prepare($sql);
         // echo $passdatatype.",".$passvalues;die();
-        $e->bind_param("sss",$name,$email,$password);
+        $e->bind_param($passquestionmark,$name,$email,$password);
         $e->execute();
         if(!$this->con->error){
             return $this->convert(true,"success","",(array)$this->con->insert_id);
@@ -280,47 +310,99 @@ class Connection{
         foreach($data as $key=>$value){
         }
     }
+    public function pagination(int $offset,int $limit){
+        $this->pagination=true;
+        $this->offset=$offset;
+        $this->limit=$limit;
+    }
     
-    public function showtables():void{
+    public function instance():void{
         $sql="SHOW FIELDS FROM {$this->table}";
         $result=$this->con->prepare($sql);
         $result->execute();
         $e=$result->get_result()->fetch_all(MYSQLI_ASSOC);
         if(!$this->con->error){
-        $data="<table class='crudtable' style='width:100%;'><tr class='crudtr' style='width:100%; margin-bottom:10px;'>";
+        $data="<table class='crudtable table table-sm table-hover table-responsive-sm'><form action='{$_SERVER['PHP_SELF']}' method='get'>
+        ";?>
+        <caption>All Records</caption>
+        <?php
+        $data.="
+        <button class='m-2' type='submit'>Delete Selected Records</button>
+        <thead class='thead-dark w-100'><tr><th class='text-center'>Delete</th>";
         foreach($e as $key=>$value){
-            $data.="<th>".$value['Field']."</th>";
+            $data.="<th scope='col' class='text-center'>".$value['Field']."</th>";
         }
-        $data.="<th style='text-align:center;'>Update</th><th>Delete</th></tr>";
+        $data.="<th class='text-center'>Update</th><th class='text-center'>Delete</th></tr></thead>";
     }
-    
-   $result1=$this->all();
+    echo $sql="SELECT * FROM {$this->table} LIMIT {$this->offset},{$this->limit}";
+    echo "<br>";
+   $result1=$this->query($sql);
    foreach($result1 as $value){
     if(is_array($value)){
     foreach($value as $value1){
-    $data.="<form action='{$_SERVER['PHP_SELF']}' method='get'><tr style='margin-bottom:10px;'>";
-    if(is_array($value1) OR (is_object($value1))){
+        if(is_array($value1) OR (is_object($value1))){
+        $data.="<form action='{$_SERVER['PHP_SELF']}' method='get'><tr><td class='text-center'><input type='checkbox' name='checkbox'/></td>";
     foreach($value1 as $value2){
         if($key == 0 && $value !=null){
-            $data .="<td style='text-align:center;'>".str_replace("'",'',$value2)."</td>";
+            $data .="<td class='text-center'>".str_replace("'",'',$value2)."</td>";
         }
         elseif((is_string($value2))){
             if(strlen($value2)>100){
-                $data .="<td style='text-align:center;'>".str_replace("'",'',substr($value2,0,100))."</td>";
+                $data .="<td class='text-center'>".str_replace("'",'',substr($value2,0,100))."</td>";
             }
         }
         $str=$value2??"";
-        $data .="<td style='text-align:center;'>".str_replace("'",'',$str)."</td>";
+        $data .="<td class='text-center'>".str_replace("'",'',$str)."</td>";
     }
+
+    $data.="<td class='text-center'><form action='{$_SERVER['PHP_SELF']}' method='get'><button><input type='submit' hidden name='update' value='".$this->id."'>&#8634;</button></form></td><td class='text-center'><form action='{$_SERVER['PHP_SELF']}' method='get'><button><input type='hidden'  name='delete' value='".$this->id."'>X</button></form></td></tr>";
     }
-    $data.="<td style='text-align:center;'><button><input type='submit' hidden name='update' value=''>&#8634;</button></td><td style='text-align:center;'><button><input type='hidden'  name='delete' value='".$this->id."'>X</button></td></tr></form>";
     }
 }
    }
-    $data.="</table>";
+   
+$data.="</table>";
+
+if($this->pagination){
+    $sql="SELECT * FROM {$this->table}";
+        $e=$this->con->query($sql);
+        if($e->num_rows>0){
+    if(isset($_GET['page'])){
+         $this->offset=($_GET['page']-1)*$this->limit;
+            $this->total_pages=ceil($e->num_rows/$this->limit);
+            echo "Page set ".$e->num_rows;
+                 
+    }else{
+         $this->offset=(0-1)*$this->limit;
+            $this->total_pages=ceil($e->num_rows/$this->limit);
+            echo "Page Not Set ".$e->num_rows;        
+    }
+        }
+                
+
+$data.="<table class='table w-10 text-center'><nav class='page navigation example'><ul class='pagination list-group'><tr><td  class='page-item'><li' class='page-item'><a href='#' class='page-link'>Previus</a></td>"; 
+for($i=1;$i<=$this->total_pages;$i++){
+    if($this->total_pages >=8){
+
+    }else{
+
+    }
+    $active="";
+    if(isset($_GET['page'])){
+    if($_GET['page']== $i){
+        $active="active";
+    }else{
+        $active="";
+    }
+}
+     $data.="<td><li style='list-style:none;' class='page-item'><a href='{$_SERVER['PHP_SELF']}?page={$i}' class='page-link {$active}'>{$i}</a></li></td>";
+}
+    $data.="<td><li style='list-style:none;' class='page-item'><a href='#' class='page-link'>Next</a></li></td></ul></nav></tr></table>";
+}   
     echo $data;
 
     }
+   
 
     public function add(){
 
@@ -348,5 +430,7 @@ class Connection{
           $this->checkstatus=false;
         }
     }
+}
+
 }
 ?>

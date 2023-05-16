@@ -12,8 +12,18 @@
      use MyApp\Connection;
      $con=new Connection("localhost","root","","testing");
      $con->settable("data");
-     $con->showtables();
-     $con->update(["name"=>"Rashid Farid","email"=>"test@gmail.com","password"=>"1234"],2);
+     $con->pagination(3,4);
+     $con->instance();
+    //  echo $con->pagination;
+    //  if($con->pagination){
+    //     echo "pagination false";
+    //  }else{
+    //     echo "Pagination True";
+    //  }
+    
+    // $r=$con->insert(array("name"=>"rashid farid","email"=>"test@gmail.com","password"=>"1234"));
+    // echo "<pre>";
+    // print_r($r);
     ?>
 </body>
 </html>

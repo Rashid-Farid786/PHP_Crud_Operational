@@ -1,41 +1,8 @@
 <?php
 namespace MyApp{
-    set_error_handler(function($errorno,$errorstr,$errorfile,$errorline){
-        echo "<script>message('Error : {$errorstr} , the line number is : {$errorline} and the file is : ".basename($errorfile)."','crudwhite');</script>";
-    });
-    set_exception_handler(function(Throwable $exception){
-        echo '<script>message("Error : '.$exception->getmessage().' on line number is : '.$exception->getLine().' and file is : '.basename($exception->getfile()).'","crudwhite");</script>';
-     });
-    ?>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="src/css/style.css">
-    <script>
-        function message(message,status){
-        let tag=document.createElement("h3");
-        let text=document.createTextNode(message);
-        tag.classList.add(status);
-        tag.appendChild(text);
-        document.write(tag.outerHTML);
-        setTimeout(function(){
-            tag.remove();
-        },1000);
-    }
-    </script>
-    <?php
-class Obj{
-    public $status;
-    public $message;
-    public $error;
-    public $data;
-    public function __construct(bool $status,string $message,string $error,array $data){
-        $this->status=$status;
-        $this->message=$message;
-        $this->error=$error;
-        $this->data=$data;
-    }
-}
+    use MyApp\ErrorResponse;
 
-class Connection{
+class Connection extends ErrorResponse{
     public $user_name;
     public $host_name;
     public $password;
@@ -47,6 +14,7 @@ class Connection{
     public $checkstatus;
     public $offset=0;
     public $limit=100;
+    public $crud;
     public $pagination=false;
     public $total_pages;
     // create Connection
@@ -59,6 +27,7 @@ class Connection{
             $this->con=mysqli_connect($this->host_name,$this->user_name,$this->password,$this->db_name);
             if(!$this->con->connect_error){
                 $this->checkstatus=true;
+                $this->crus=new Crud();
             }else{
                 $this->checkstatus=false;
                 die($this->con->connect_error);
@@ -119,6 +88,14 @@ class Connection{
             return $this->convert(false,"Data Not Found",$this->con->error,"");
         }
     }
+    public function customquery(string $data){
+        $e=$this->con->prepare($data);
+        $e->execute();
+        if(!$this->con->error){
+        $result=$e->get_result()->fetch_all(MYSQLI_ASSOC);
+        return $result;
+    }
+    }
 
     // Selct All Database Data
     public function all():array{
@@ -137,40 +114,13 @@ class Connection{
     public function insert(array $arr):array{
         extract($arr);
         $keys=implode(",",array_keys($arr));
-        // $Keys1="";
         $values="";
-        // $questionMark="";
-        // $datatype="";
         foreach($arr as $key=>$value){
             // store array values in values variable
             $values.="'".$value."',";
-            // $values.=$$key.",";
-            // store question marks in variable
-            // $questionMark.="? ,";
-            // Pickup data datatype
-            // switch(gettype($value)){
-            //     case "string":
-            //         $datatype .='s';
-            //         break;
-            //         case 'integer':
-            //             $datatype.='i';
-            //             case 'boolean':
-            //         $datatype.='b';
-            //         break;
-            //         default:
-            //     }
         }
-        // $passquestionmark=trim($questionMark,',');
-        // $passvalues=trim($values,',');
-        // $passvaluess=trim($passvalues,"'");
-        // echo $passvalues;die();
-        // $passarray=explode(',',$passvalues);
-        // list($name,$email,$password)=$passarray;
-        // $passdatatype=trim($datatype);
         $sql="INSERT INTO {$this->table} ({$keys}) VALUES(".trim($values,',').")";
         $e=$this->con->prepare($sql);
-        // echo $passdatatype.",".$passvalues;die();
-        // $e->bind_param($passdatatype,$passvaluess);
         $e->execute();
         if(!$this->con->error){
             return $this->convert(true,"success","",["id"=>$this->con->insert_id]);
@@ -178,7 +128,10 @@ class Connection{
             return $this->convert(false,"Data Not Inserted",$this->con->error,'');
         }
     }
+
+    // insert Data With Image
     public function mixer(array $arr,array $file,string $filepath):array{
+
         // upload image code
         $error = array();
 		$name = $_FILES['file']['name'];
@@ -204,16 +157,20 @@ class Connection{
 		}
         // end uploadI Image
 
+        // Inser Data Code
         $k=array_keys($arr);
         $keys=implode(",",$k);
         $values="";
         $questionMark="";
         $datatype="";
         foreach($arr as $key=>$value){
-                // store array values in values variable
+                
+            // store array values in values variable
                 $values.="'{$value}' ,";
+                
                 // store question marks in variable
                 $questionMark.="? ,";
+
                 // Pickup data datatype
                 switch(gettype($value)){
                     case "string":
@@ -227,6 +184,7 @@ class Connection{
                     default:
                 }
         }
+
         $passquestionmark=trim($questionMark,',');
         $passvalues=trim($values,',');
         $passarray=explode(',',$passvalues);
@@ -256,38 +214,40 @@ class Connection{
 
     // Update Already Exist Data Fron DataBase Table
     public function update(array $arr,int $id):array{
-        $datatype="";
-        $keys="";
+        // $datatype="";
+        // $keys="";
         $values="";
         foreach($arr as $key=>$value){
-            $keys.="{$key} = ? ,";
-            $values.=$value.", ";
-            switch(gettype($value)){
-                case "string":
-                $datatype .='s';
-                break;
-                case 'integer':
-                $datatype.='i';
-                case 'boolean':
-                $datatype.='b';
-                break;
-                default:
-            }
+            $values.=$key." = ".$value.", ";
+            // $keys.="{$key} = ? ,";
+            // $values.=$value.", ";
+            // switch(gettype($value)){
+            //     case "string":
+            //     $datatype .='s';
+            //     break;
+            //     case 'integer':
+            //     $datatype.='i';
+            //     case 'boolean':
+            //     $datatype.='b';
+            //     break;
+            //     default:
+            // }
         }
-        $pe=trim($datatype,",");
-        $ve=trim($values,",");
-        $vve=trim($ve,"'");
-        $passarray=explode(',',$vve);
-        $listvalue="";
-        foreach($passarray  as $key=>$v){
-            $listvalue.="$"."e".$key.", ";
-        }
-        $listpassvalue=trim(",",$listvalue);
-        list($listpassvalue)=$passarray;
-        ($datatype.",".$values);
-        $sql="UPDATE {$this->table} SET ".trim($keys,',')." WHERE id={$id}";
+        // $pe=trim($datatype,",");
+        // $ve=trim($values,",");
+        // $vve=trim($ve,"'");
+        // $passarray=explode(',',$vve);
+        // $listvalue="";
+        // foreach($passarray  as $key=>$v){
+        //     $listvalue.="$"."e".$key.", ";
+        // }
+        // $listpassvalue=trim(",",$listvalue);
+        // list($listpassvalue)=$passarray;
+        // ($datatype.",".$values);
+        $passvalue=trim($values,",");
+        echo $sql="UPDATE {$this->table} SET {$passvalue} WHERE id={$id}";die();
         $e=$this->con->prepare($sql);
-        $e->bind_param($pe,$listpassvalue);
+        // $e->bind_param($pe,$listpassvalue);
         $e->execute();
         if(!$this->con->error){
             return $this->convert(true,"Data Updated","",(array)["id"=>$id]);
@@ -324,112 +284,12 @@ class Connection{
         $this->limit=$limit;
     }
     
-    public function instance():void{
-        $sql="SHOW FIELDS FROM {$this->table}";
-        $result=$this->con->prepare($sql);
-        $result->execute();
-        $e=$result->get_result()->fetch_all(MYSQLI_ASSOC);
-        if(!$this->con->error){
-        $this->data="<table class='crudtable table table-sm table-hover table-responsive-sm'><form action='{$_SERVER['PHP_SELF']}' method='get'>
-        ";?>
-        <caption>All Records</caption>
-        <?php
-        $this->data.="
-        <button class='m-2' type='submit'>Delete Selected Records</button>
-        <thead class='thead-dark w-100'><tr><th class='text-center'>Delete</th>";
-        foreach($e as $key=>$value){
-            $this->data.="<th scope='col' class='text-center'>".$value['Field']."</th>";
-        }
-        $this->data.="<th class='text-center'>Update</th><th class='text-center'>Delete</th></tr></thead>";
-    }
-    echo $sql="SELECT * FROM {$this->table} LIMIT {$this->offset},{$this->limit}";
-    echo "<br>";
-   $result1=$this->query($sql);
-   foreach($result1 as $value){
-    if(is_array($value)){
-    foreach($value as $value1){
-        if(is_array($value1) OR (is_object($value1))){
-            $this->data.="<form action='{$_SERVER['PHP_SELF']}' method='get'><tr><td class='text-center'><input type='checkbox' name='checkbox'/></td>";
-    foreach($value1 as $value2){
-        if($key == 0 && $value !=null){
-            $this->data .="<td class='text-center'>".str_replace("'",'',$value2)."</td>";
-        }
-        elseif((is_string($value2))){
-            if(strlen($value2)>100){
-                $this->data .="<td class='text-center'>".str_replace("'",'',substr($value2,0,100))."</td>";
-            }
-        }
-        $str=$value2??"";
-        $this->data .="<td class='text-center'>".str_replace("'",'',$str)."</td>";
-    }
-
-    $this->data.="<td class='text-center'><form action='{$_SERVER['PHP_SELF']}' method='get'><button><input type='submit' hidden name='update' value='".$this->id."'>&#8634;</button></form></td><td class='text-center'><form action='{$_SERVER['PHP_SELF']}' method='get'><button><input type='hidden'  name='delete' value='".$this->id."'>X</button></form></td></tr>";
-    }
-    }
-}
-   }
+    
    
-   $this->data.="</table>";
-$previus;
-$nest;
-$pages=0;
-if(!isset($_GET['page'])){
-$pages=$_GET['page']?$_GET['page']:0;
-}
-if($this->pagination){
-    $sql="SELECT * FROM {$this->table}";
-        $e=$this->con->query($sql);
-        if($e->num_rows>0){
-    if(isset($_GET['page'])){
-         $this->offset=($pages-1)*$this->limit;
-            $this->total_pages=ceil($e->num_rows/$this->limit);
-            echo "Page set ".$e->num_rows;
-            $previus=$pages-1;
-            $nest=$pages+1;
-                 
-    }else{
-         $this->offset=(0-1)*$this->limit;
-            $this->total_pages=ceil($e->num_rows/$this->limit);
-            echo "Page Not Set ".$e->num_rows;        
-    }
-        }
-                
+    // add Data Width Image
+    public function add(){}
 
-        $this->data.="<table class='table w-10 text-center'><nav class='page navigation example'><ul class='pagination list-group'><tr>";
-        if($pages>1){
-            $this->data.="<td  class='page-item'><li' class='page-item'><a href='{$_SERVER['PHP_SELF']}?page={$previus}' class='page-link'>Previus</a></td>"; 
-        }
-for($i=1;$i<=$this->total_pages;$i++){
-    if($this->total_pages >=8){
-
-    }else{
-
-    }
-    $active="";
-    if(isset($_GET['page'])){
-    if($_GET['page']== $i){
-        $active="active";
-    }else{
-        $active="";
-    }
-}
-$this->data.="<td><li style='list-style:none;' class='page-item'><a href='{$_SERVER['PHP_SELF']}?page={$i}' class='page-link {$active}'>{$i}</a></li></td>";
-}
-if($pages < $this->total_pages){
-    $this->data.="<td><li style='list-style:none;' class='page-item'><a href='{$_SERVER['PHP_SELF']}?page={$nest}' class='page-link'>Next</a></li></td></ul></nav>";
-}
-$this->data.="</tr></table>";
-}   
-    echo $this->data;
-
-    }
-   
-
-    public function add(){
-
-    }
-
-    // Cover Array To Object
+    // Cover Array To Object for Response
     private function convert(bool $staus,String $message,string $error,$data):array{
         $object;
         if(is_array($data)){
@@ -441,16 +301,11 @@ $this->data.="</tr></table>";
             }else{
                 $object=["data"=>"none"];
             }
-            return(array)(new obj($staus,$message,$error,$object));
+            return(array)(new ErrorResponse($staus,$message,$error,$object));
     }
 
         // Close Database Connection
-    private function __destrunct(){
-        if($this->checkstatus){
-          $this->con->close();
-          $this->checkstatus=false;
-        }
-    }
+   
 }
 
 }

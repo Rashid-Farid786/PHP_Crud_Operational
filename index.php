@@ -9,21 +9,14 @@
 <body>
     <?php
      include_once realpath("vendor/autoload.php");
-     use MyApp\Connection;
-     $con=new Connection("localhost","root","","testing");
+     use MyApp\Crud;
+     $con=new Crud("localhost","root","","testing");
      $con->settable("data");
      $con->pagination(3,4);
      $con->instance();
-    //  echo $con->pagination;
-    //  if($con->pagination){
-    //     echo "pagination false";
-    //  }else{
-    //     echo "Pagination True";
-    //  }
-    
-    // $r=$con->insert(array("name"=>"rashid farid","email"=>"test@gmail.com","password"=>"1234"));
-    // echo "<pre>";
-    // print_r($r);
+    //  $e=$con->update(["name"=>"test","email"=>"test@gmail.com","password"=>"1234"],20);
+    //  echo "<pre>";
+    //  print_r($e);
     ?>
 </body>
 </html>

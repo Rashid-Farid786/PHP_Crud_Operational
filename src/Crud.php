@@ -2,9 +2,10 @@
 namespace MyApp;
 use MyApp\Connection;
 class Crud extends Connection{
-    function __construct($host,$user,$password,$db){
+    public Connection $conn;
+    public function __construct($host=null,$user=null,$password=null,$db=null){
         parent::__construct($host,$user,$password,$db);
-        new Connection();
+        // new Connection($host,$user,$password,$db);
     }
     public function get($sql){
         $e=$this->con->prepare($sql);

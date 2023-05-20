@@ -5,17 +5,17 @@ namespace MyApp;
 class Error{
     public function __construct(){
     
-        set_error_handler("errorHandler");
-        set_exception_handler("exeptionHandler");
         function errorHandler($errorno,$errorstr,$errorfile,$errorline){
             echo "<script>message('Error : {$errorstr} , the line number is : {$errorline} and the file is : ".basename($errorfile)."','crudwhite');</script>";
         }
-
+        
         
         function exeptionHandler(Throwable $exception){
-        echo '<script>message("Error : '.$exception->getmessage().' on line number is : '.$exception->getLine().' and file is : '.basename($exception->getfile()).'","crudwhite");</script>';
+            echo '<script>message("Error : '.$exception->getmessage().' on line number is : '.$exception->getLine().' and file is : '.basename($exception->getfile()).'","crudwhite");</script>';
         }
-
+        
+        set_error_handler("errorHandler");
+        set_exception_handler("exeptionHandler");
         
 
         $Error='<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">

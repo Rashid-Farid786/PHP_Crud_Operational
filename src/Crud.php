@@ -1,11 +1,41 @@
 <?php
 namespace MyApp;
 use MyApp\Connection;
+// use MyApp\ErrorResponse;
 class Crud extends Connection{
-    public Connection $conn;
-    public function __construct($host=null,$user=null,$password=null,$db=null){
+    // public string $user_name;
+    // public string $host_name;
+    // public string $password;
+    // public string $db_name;
+    // public object $con;
+    // public string $table;
+    // public int $id;
+    // public object $data;
+    // public bool $checkstatus=false;
+    // public int $offset=0;
+    // public int $limit=100;
+    // public  $crud;
+    // public bool $pagination=false;
+    // public int $total_pages;
+    public function __construct(string $host,string $user,string $password,string $db){
         parent::__construct($host,$user,$password,$db);
+        // parent::__construct();
         // new Connection($host,$user,$password,$db);
+
+        // $this->host_name=$host;
+        // $this->user_name=$user;
+        // $this->password=$password;
+        // $this->db_name=$db;
+        // if(!$this->checkstatus){
+        //     $this->con=mysqli_connect($this->host_name,$this->user_name,$this->password,$this->db_name);
+        //     if(!$this->con->connect_error){
+        //         $this->checkstatus=true;
+        //         // $this->crus=new Crud();
+        //     }else{
+        //         $this->checkstatus=false;
+        //         die($this->con->connect_error);
+        //     }
+        // }
     }
     public function get($sql){
         $e=$this->con->prepare($sql);

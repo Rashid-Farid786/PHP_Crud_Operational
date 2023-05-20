@@ -11,8 +11,8 @@
      include_once realpath("vendor/autoload.php");
      use MyApp\Crud;
      $con=new Crud("localhost","root","","v9");
+      $con->settable("countries");
      $con->instance();
-    //  $con->settable("data");
     //  $con->pagination(3,4);
     //  $con->instance();
     //  $e=$con->update(["name"=>"test","email"=>"test@gmail.com","password"=>"1234"],20);

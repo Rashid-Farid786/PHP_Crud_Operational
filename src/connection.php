@@ -1,8 +1,8 @@
 <?php
 namespace MyApp{
-    // use MyApp\ErrorResponse;
+    use MyApp\ErrorResponse;
 
-class Connection{
+class Connection extends ErrorResponse{
     public $user_name;
     public $host_name;
     public $password;
@@ -11,7 +11,7 @@ class Connection{
     public $table;
     public $id;
     public $data;
-    public $checkstatus;
+    public $checkstatus=false;
     public $offset=0;
     public $limit=100;
     public $crud;
@@ -19,6 +19,7 @@ class Connection{
     public $total_pages;
     // create Connection
     public function __construct($host,$user,$password,$db){
+        // parent::__construct();
         if(!$this->checkstatus){
             $this->host_name=$host;
             $this->user_name=$user;
@@ -27,7 +28,7 @@ class Connection{
             $this->con=mysqli_connect($this->host_name,$this->user_name,$this->password,$this->db_name);
             if(!$this->con->connect_error){
                 $this->checkstatus=true;
-                $this->crus=new Crud();
+                // $this->crus=new Crud();
             }else{
                 $this->checkstatus=false;
                 die($this->con->connect_error);

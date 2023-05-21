@@ -1,13 +1,14 @@
 <?php
 namespace MyApp;
 use MyApp\Error;
-class ErrorResponse extends Error{
+include_once "Error.php";
+class ErrorResponse{
     public $status;
     public $message;
     public $error;
     public $data;
     public function __construct(bool $status,string $message,string $error,array $data){
-        parent::__construct();
+        // parent::__construct();
         $this->status=$status;
         $this->message=$message;
         $this->error=$error;

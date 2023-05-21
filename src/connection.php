@@ -3,22 +3,22 @@ namespace MyApp{
     use MyApp\ErrorResponse;
 
 class Connection extends ErrorResponse{
-    public $user_name;
-    public $host_name;
-    public $password;
-    public $db_name;
-    public $con;
-    public $table;
-    public $id;
+    public string $user_name;
+    public string $host_name;
+    public string $password;
+    public string $db_name;
+    public object $con;
+    public string $table;
+    public int $id=0;
     public $data;
     public $checkstatus=false;
-    public $offset=0;
-    public $limit=100;
+    public int $offset=0;
+    public int $limit=100;
     public $crud;
-    public $pagination=false;
-    public $total_pages;
+    public bool $pagination=false;
+    public int $total_pages;
     // create Connection
-    public function __construct($host,$user,$password,$db){
+    public function __construct(string $host,string $user,string $password,string $db){
         // parent::__construct();
         if(!$this->checkstatus){
             $this->host_name=$host;
@@ -40,6 +40,10 @@ class Connection extends ErrorResponse{
     public function settable($table){
         if($this->checkstatus){
         $this->table=$table;
+        $_SESSION['crud']['table']=["u"=>$this->user_name];
+        $_SESSION['crud']['table']=["h"=>$this->host_name];
+        $_SESSION['crud']['table']=["d"=>$this->db_name];
+        $_SESSION['crud']['table']=["t"=>$this->table];
         }else{
             echo "Connect error";
         }

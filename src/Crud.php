@@ -3,20 +3,7 @@ namespace MyApp;
 use MyApp\Connection;
 // use MyApp\ErrorResponse;
 class Crud extends Connection{
-    // public string $user_name;
-    // public string $host_name;
-    // public string $password;
-    // public string $db_name;
-    // public object $con;
-    // public string $table;
-    // public int $id;
-    // public object $data;
-    // public bool $checkstatus=false;
-    // public int $offset=0;
-    // public int $limit=100;
-    // public  $crud;
-    // public bool $pagination=false;
-    // public int $total_pages;
+    public $getid=0;
     public function __construct(string $host,string $user,string $password,string $db){
         parent::__construct($host,$user,$password,$db);
         // parent::__construct();
@@ -71,12 +58,11 @@ class Crud extends Connection{
         $e=$result->get_result()->fetch_all(MYSQLI_ASSOC);
         if(!$this->con->error){
         $this->data="
-        <table class='crudtable table table-sm table-hover table-responsive-sm'>
-        <form action='{$_SERVER['PHP_SELF']}' method='get'>
-        <button class='m-2' type='submit'>Delete Selected Records</button>
+        <button class='m-2' type='submit' onclick='deleteAll()'>Delete Selected Records</button>
+        <table class='crudtable table table-sm table-hover table-responsive-sm crudtable'>
         <thead class='thead-dark w-100'>
         <tr>
-        <th class='text-center'>Delete</th>";
+        <th class='text-center'><input type='checkbox' id='check' onclick='checkbox()'/><label for='check'> &nbsp; Delete </label></th>";
         foreach($e as $key=>$value){
             $this->data.="
             <th scope='col' class='text-center'>".$value['Field']."</th>";
@@ -89,53 +75,49 @@ class Crud extends Connection{
     }
     $sql="SELECT * FROM {$this->table} LIMIT {$this->offset},{$this->limit}";
    $result1=$this->customquery($sql);
-   foreach($result1 as $value){
-    if(is_array($value)){
-    foreach($value as $value1){
-        if(is_array($value1) OR (is_object($value1))){
-            $this->data.="<form action='{$_SERVER['PHP_SELF']}' method='get'>
+//    echo "<pre>";
+//    print_r($result1);die();
+    foreach($result1 as $value){
+        if(is_array($value) OR (is_object($value))){
+            $this->data.="
             <tr>
             <td class='text-center'>
             <input type='checkbox' name='checkbox'/>
             </td>";
-    foreach($value1 as $value2){
-        if($key == 0 && $value !=null){
-            $this->data .="
-            <td class='text-center'>".str_replace("'",'',$value2)."</td>";
+    foreach($value as $key=>$value1){
+        if($key == 'id'){
+            $this->getid=$value['id'];
         }
-        elseif((is_string($value2))){
-            if(strlen($value2)>100){
+    //     echo "<pre>";
+    //    echo $value1 ;die();
+        if($key == 0 && $value1 !=null){
+            $this->data .="
+            <td class='text-center'>".str_replace("'",'',$value1)."</td>";
+        }
+        elseif((is_string($value1))){
+            if(strlen($value1)>100){
                 $this->data .="
-                <td class='text-center'>".str_replace("'",'',substr($value2,0,100))."</td>";
+                <td class='text-center'>".str_replace("'",'',substr($value1,0,100))."</td>";
             }
         }
-        $str=$value2??"";
+        $str=$value1??"";
         $this->data .="
         <td class='text-center'>".str_replace("'",'',$str)."</td>";
     }
-
     $this->data.="
     <td class='text-center'>
-    <form action='{$_SERVER['PHP_SELF']}' method='get'>
-    <button>
-    <input type='submit' hidden name='update' value='".$this->id."'>
+    <button id='".$this->getid."' onclick='updatedata(this)'>
     &#8634;
     </button>
-    </form>
     </td>
     <td class='text-center'>
-    <form action='{$_SERVER['PHP_SELF']}''method='get'>
-    <button>
-    <input type='submit' hidden name='delete' value='".$this->id."'>
+    <button id='".$this->getid."' onclick='deletedata(this)'>
     X
     </button>
-    </form>
     </td>
     </tr>";
     }
     }
-}
-   }
    
 $this->data.="</table>";
 $previus;

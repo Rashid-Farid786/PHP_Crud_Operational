@@ -1,7 +1,13 @@
 <?php
 namespace MyApp;
 
+?>
 
+<link rel="stylesheet" href="src/css/style.css">
+
+<script src="src/js/jquery-3.7.0.min.js"></script>
+<script src="src/js/crudAjax.js"></script>
+<?php
 class Error{
     public function __construct(){
     

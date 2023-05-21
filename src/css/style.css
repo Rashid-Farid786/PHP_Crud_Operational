@@ -1,3 +1,18 @@
+@import "bootstrap.min.css";
+@import "colors.css";
+
+*::selection{
+    color: var(--t2r3) !important;
+    background: var(--t3o);
+}
+body{
+    /* background:linear-gradient(#f1f1f1,#e1e1e1,#ffffff,#f9f9f9,#f9f9f9,#ffffff,#e1e1e1#f1f1f1); */
+    /* background: #FD5F00; */
+    background: rgba(150,150,150,0.2);
+}
+button{
+    user-select: none;
+}
 .cruderror,.crudsuccess,.crudwhite{
     max-width:80%;
     padding:5px 20px;
@@ -29,4 +44,14 @@
 .active{
     background:blue;
     color:white;
+}
+.crudtable{
+    color: #FD5F00;
+    font-style: italic;
+    font-weight: bolder;
+    background: white;
+}
+
+input[type=checkbox]{
+    accent-color: green;
 }

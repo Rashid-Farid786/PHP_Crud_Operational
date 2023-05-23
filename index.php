@@ -10,8 +10,8 @@
     <?php
      include_once realpath("vendor/autoload.php");
      use MyApp\Crud;
-     $con=new Crud("localhost","root","","v9");
-      $con->settable("countries");
+     $con=new Crud("localhost","root","","testing");
+      $con->settable("data1");
      $con->instance();
     //  $con->pagination(3,4);
     //  $con->instance();

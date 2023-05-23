@@ -73,10 +73,21 @@ function deleteAll(){
         
             window.location.reload();
         }
-    
 });
 }
 }
+
+function load(){
+    
+    $.post({
+        url:'src/adddata.php',
+        success:function(re){
+            console.log(re);
+            }
+
+    });
+}
+
 
 function deletedata(id){
     // if(confirm("Are you Reali to delete data")){

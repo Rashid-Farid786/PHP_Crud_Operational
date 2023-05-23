@@ -60,6 +60,7 @@ class Crud extends Connection{
         if(!$this->con->error){
         $this->data="
         <button class='m-2' type='submit' onclick='deleteAll()'>Delete Selected Records</button>
+        <button class='m-2 float-right' type='submit' onclick='load()'>Add</button>
         <table class='crudtable table table-sm table-borderless table-responsive-sm crudtable'>
         <thead class='thead-dark w-100'>
         <tr>

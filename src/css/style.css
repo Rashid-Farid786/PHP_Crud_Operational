@@ -12,6 +12,8 @@ body{
 }
 button{
     user-select: none;
+    color:#e1e1e1;
+    background: #1a0019;
 }
 .cruderror,.crudsuccess,.crudwhite{
     max-width:80%;
@@ -46,10 +48,13 @@ button{
     color:white;
 }
 .crudtable{
-    color: #FD5F00;
+    color: #27374D;
     font-style: italic;
     font-weight: bolder;
-    background: white;
+    background: #DDE6ED;
+}
+.crudtable th{
+    color: #b1b1b1 !important;
 }
 
 input[type=checkbox]{

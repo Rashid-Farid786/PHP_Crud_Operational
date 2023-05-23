@@ -40,10 +40,8 @@ class Connection extends ErrorResponse{
     public function settable($table){
         if($this->checkstatus){
         $this->table=$table;
-        $_SESSION['crud']['table']=["u"=>$this->user_name];
-        $_SESSION['crud']['table']=["h"=>$this->host_name];
-        $_SESSION['crud']['table']=["d"=>$this->db_name];
-        $_SESSION['crud']['table']=["t"=>$this->table];
+        session_start();
+        $_SESSION['crud']=["u"=>$this->user_name,"h"=>$this->host_name,"d"=>$this->db_name,"t"=>$this->table,"p"=>$this->password];
         }else{
             echo "Connect error";
         }

@@ -56,13 +56,14 @@ class Crud extends Connection{
         $result=$this->con->prepare($sql);
         $result->execute();
         $e=$result->get_result()->fetch_all(MYSQLI_ASSOC);
+        $_SESSION['crud']['id']=$e[0]['Field'];
         if(!$this->con->error){
         $this->data="
         <button class='m-2' type='submit' onclick='deleteAll()'>Delete Selected Records</button>
-        <table class='crudtable table table-sm table-hover table-responsive-sm crudtable'>
+        <table class='crudtable table table-sm table-borderless table-responsive-sm crudtable'>
         <thead class='thead-dark w-100'>
         <tr>
-        <th class='text-center'><input type='checkbox' id='check' onclick='checkbox()'/><label for='check'> &nbsp; Delete </label></th>";
+        <th class='text-center'><input type='checkbox' id='check' onclick='checkbox()'/></th>";
         foreach($e as $key=>$value){
             $this->data.="
             <th scope='col' class='text-center'>".$value['Field']."</th>";
@@ -77,13 +78,15 @@ class Crud extends Connection{
    $result1=$this->customquery($sql);
 //    echo "<pre>";
 //    print_r($result1);die();
-    foreach($result1 as $value){
+   $this->getid=$result1[0]['id']??"";
+foreach($result1 as $value){
         if(is_array($value) OR (is_object($value))){
             $this->data.="
             <tr>
             <td class='text-center'>
-            <input type='checkbox' name='checkbox'/>
+            <input type='checkbox' value='{$this->getid}' name='checkbox'/>
             </td>";
+            // $id=$this->getid+1;
     foreach($value as $key=>$value1){
         if($key == 'id'){
             $this->getid=$value['id'];
@@ -106,7 +109,7 @@ class Crud extends Connection{
     }
     $this->data.="
     <td class='text-center'>
-    <button id='".$this->getid."' onclick='updatedata(this)'>
+    <button id='".$this->getid."' onclick='updateOpen(this)'>
     &#8634;
     </button>
     </td>
@@ -116,6 +119,7 @@ class Crud extends Connection{
     </button>
     </td>
     </tr>";
+    $this->getid++;
     }
     }
    

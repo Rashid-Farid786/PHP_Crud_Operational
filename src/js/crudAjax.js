@@ -59,45 +59,63 @@ function checkbox(){
 
 
 function deleteAll(){
-    // let check=document.querySelectorAll("input[type=checkbox]");
-    // check.forEach(function(value,key){
-    //     if(value.checked){
-    //         value.checked=false;
-    //     }else{
-    //         value.checked=true;
-    //     }
-    // });
+    if(confirm("Are you Reali to delete data")){
+    var arr=[];
+   $(":checkbox:checked").each(function(key,value){
+    arr[key]=$(this).val();
+   });
+//    console.log(arr);
+   $.post({
+    url:'src/delete.php',
+    data:{de:arr},
+    success:function(re){
+        // console.log(re);
+        
+            window.location.reload();
+        }
+    
+});
+}
 }
 
 function deletedata(id){
-    // alert(`delete ${id.id}`);
+    // if(confirm("Are you Reali to delete data")){
     $.post({
         url:'src/delete.php',
-        // data:{data:id},
+        data:{de:id.id},
         success:function(re){
-            console.log(re);
+            // console.log(re);
+           if(re){
+               window.location.reload();
+           }
         }
     });
+    // }
 }
 
 
 function updateOpen(id){
-    let html=`<div class='container'>
-    <div class='row'>
-    <div class='col-12'>
-    
-    </div>
-    </div>
-    </div>`;
-}
-
-function updatedata(id){
     // alert(`Update ${id.id}`);
     $.post({
-        url:'src/update.php',
-        // data:{data:id},
-        success:function(re){
-            console.log(re);
+        url:'src/loadmodel.php',
+        data:{up:id.id},
+        success:function(data,status,xhr){
+            // console.log(`${data}`);
+            $('body').append(data);
+        },
+        error:function(xhr,status,error){
+            console.log(error);
         }
     });
 }
+
+// function updatedata(id){
+//     alert(`Update ${id.id}`);
+//     // $.post({
+//     //     url:'src/update.php',
+//     //     // data:{data:id},
+//     //     success:function(re){
+//     //         console.log(re);
+//     //     }
+//     // });
+// }

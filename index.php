@@ -11,13 +11,13 @@
      include_once realpath("vendor/autoload.php");
      use MyApp\Crud;
      $con=new Crud("localhost","root","","testing");
-      $con->settable("data1");
-     $con->instance();
-    //  $con->pagination(3,4);
-    //  $con->instance();
-    //  $e=$con->update(["name"=>"test","email"=>"test@gmail.com","password"=>"1234"],20);
-    //  echo "<pre>";
-    //  print_r($e);
+      $con->settable("data");
+      //  $con->instance();
+      //  $con->pagination(3,4);
+    //   $e=$con->insert(["name"=>"test","email"=>"test@gmail.com","password"=>"1234",]);
+      //  echo "<pre>";
+      //  print_r($e);
+      $con->instance();
     ?>
 </body>
 </html>

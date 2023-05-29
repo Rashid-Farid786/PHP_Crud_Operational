@@ -1,43 +1,3 @@
-class crud{
-
-constructor(){
-
-}
-
-confirm(text){
-    if(confirm(text)){
-        return true;
-    }else{
-        return false;
-    }
-}
-
-update(data){
-    $.post({
-        url:'update.php',
-        data:data,
-        success:function(data){
-
-        }
-    });
-
-}
-
-
-
-
-delete(data){
-    $.post({
-        url:'delete.php',
-        data:data,
-        success:function(data){
-            
-        }
-    });
-}
-}
-
-
 function checkbox(){
     let check=document.querySelectorAll("input[type=checkbox]");
     if(check.checked){
@@ -59,11 +19,12 @@ function checkbox(){
 
 
 function deleteAll(){
-    if(confirm("Are you Reali to delete data")){
     var arr=[];
-   $(":checkbox:checked").each(function(key,value){
-    arr[key]=$(this).val();
-   });
+    $(":checkbox:checked").each(function(key,value){
+        arr[key]=$(this).val();
+    });
+    if(arr.length == 0){
+    if(confirm("Are you Reali to delete data")){
 //    console.log(arr);
    $.post({
     url:'src/delete.php',
@@ -75,6 +36,7 @@ function deleteAll(){
         }
 });
 }
+    }
 }
 
 function load(){
@@ -82,15 +44,16 @@ function load(){
     $.post({
         url:'src/adddata.php',
         success:function(re){
-            console.log(re);
+            // console.log(re);
+            $('body').append(re);
             }
+        
 
     });
 }
 
 
 function deletedata(id){
-    // if(confirm("Are you Reali to delete data")){
     $.post({
         url:'src/delete.php',
         data:{de:id.id},
@@ -101,17 +64,14 @@ function deletedata(id){
            }
         }
     });
-    // }
 }
 
 
 function updateOpen(id){
-    // alert(`Update ${id.id}`);
     $.post({
         url:'src/loadmodel.php',
         data:{up:id.id},
         success:function(data,status,xhr){
-            // console.log(`${data}`);
             $('body').append(data);
         },
         error:function(xhr,status,error){
@@ -130,3 +90,17 @@ function updateOpen(id){
 //     //     }
 //     // });
 // }
+
+function toggle() {
+    var password = document.getElementById("text");
+    if (password.type == 'password') {
+        password.type = 'text';
+    } else {
+        password.type = 'password';
+    }
+}
+
+function model(){
+    document.querySelector(".modal-backdrop").remove();
+    document.querySelector(".modal").remove();
+}

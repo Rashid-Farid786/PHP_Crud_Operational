@@ -125,8 +125,8 @@ foreach($result1 as $value){
     }
    
 $this->data.="</table>";
-$previus;
-$nest;
+$previus=0;
+$nest=0;
 $pages=0;
 // if(!isset($_GET['page'])){
 // $pages=$_GET['page']?$_GET['page']:0;

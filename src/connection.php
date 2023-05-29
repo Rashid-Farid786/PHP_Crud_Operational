@@ -55,7 +55,7 @@ class Connection extends ErrorResponse{
     }
 
     // Query To Database
-    public function Query(string $sql):array{
+    public function Query(string $sql){
         if($this->checkstatus){
             $request=$this->con->prepare($sql);
             $request->execute();
@@ -248,7 +248,7 @@ class Connection extends ErrorResponse{
         // list($listpassvalue)=$passarray;
         // ($datatype.",".$values);
         $passvalue=trim($values,",");
-        echo $sql="UPDATE {$this->table} SET {$passvalue} WHERE id={$id}";die();
+        $sql="UPDATE {$this->table} SET {$passvalue} WHERE id={$id}";
         $e=$this->con->prepare($sql);
         // $e->bind_param($pe,$listpassvalue);
         $e->execute();
@@ -256,7 +256,6 @@ class Connection extends ErrorResponse{
             return $this->convert(true,"Data Updated","",(array)["id"=>$id]);
         }else{
             return $this->convert(false,"Data Not Updated",$this->con->error,(array)$this->con->error);
-            die();
     }
     }
 
@@ -294,7 +293,7 @@ class Connection extends ErrorResponse{
 
     // Cover Array To Object for Response
     private function convert(bool $staus,String $message,string $error,$data):array{
-        $object;
+        $object=object;
         if(is_array($data)){
             $object=$data;
             }else if(is_object($data)){

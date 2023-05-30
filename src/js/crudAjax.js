@@ -23,7 +23,7 @@ function deleteAll(){
     $(":checkbox:checked").each(function(key,value){
         arr[key]=$(this).val();
     });
-    if(arr.length == 0){
+    if(arr.length != 0){
     if(confirm("Are you Reali to delete data")){
 //    console.log(arr);
    $.post({
@@ -36,6 +36,8 @@ function deleteAll(){
         }
 });
 }
+    }else{
+        alert("You Not Selected Deleted Value");
     }
 }
 

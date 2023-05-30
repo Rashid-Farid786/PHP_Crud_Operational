@@ -17,14 +17,14 @@ if($_POST['submit']){
  }
  $con = mysqli_connect($_SESSION['crud']['h'], $_SESSION['crud']['u'], $_SESSION['crud']['p'], $_SESSION['crud']['d']);
  $val=trim($values,',');
-echo $sql="INSERT INTO {$_SESSION['crud']['t']} ({$keys}) VALUES({$val})";die();
+$sql="INSERT INTO {$_SESSION['crud']['t']} ({$keys}) VALUES({$val})";
  $e=mysqli_query($con,$sql);
- if(mysqli_num_rows($e)>0){
-     return "Sucess";
+ if(!mysqli_error($con)){
+     return true;
  }else{
-     return "Query Error";
+     return false;
  }
 }else{
-    return "value Error";
+    return false;
 }
 ?>

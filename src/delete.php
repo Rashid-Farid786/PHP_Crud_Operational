@@ -9,7 +9,7 @@ if(is_array($_POST['de'])){
    $sql="DELETE FROM {$_SESSION['crud']['t']} WHERE {$_SESSION['crud']['id']}={$_POST['de']}";
 }
 $result=mysqli_query($con,$sql);
-if(mysqli_num_rows($result)>0){
+if(mysqli_error($con)){
     return true;
 }else{
     return false;

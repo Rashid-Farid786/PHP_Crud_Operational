@@ -23,6 +23,7 @@ function deleteAll(){
     $(":checkbox:checked").each(function(key,value){
         arr[key]=$(this).val();
     });
+    // console.log(arr);
     if(arr.length != 0){
     if(confirm("Are you Reali to delete data")){
 //    console.log(arr);
@@ -100,6 +101,10 @@ function toggle() {
     } else {
         password.type = 'password';
     }
+}
+
+function add(){
+
 }
 
 function model(){

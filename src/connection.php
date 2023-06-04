@@ -280,10 +280,12 @@ class Connection extends ErrorResponse{
         foreach($data as $key=>$value){
         }
     }
-    public function pagination(int $offset,int $limit){
-        $this->pagination=true;
+    public function pagination(int $offset,int $limit=null){
         $this->offset=$offset;
-        $this->limit=$limit;
+        if($limit != null){
+            $this->limit=$limit;
+        }
+        $this->pagination=true;
     }
     
     

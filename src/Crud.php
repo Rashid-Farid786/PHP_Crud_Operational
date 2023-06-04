@@ -3,7 +3,9 @@ namespace MyApp;
 use MyApp\Connection;
 // use MyApp\ErrorResponse;
 class Crud extends Connection{
-    public $getid=0;
+    public int $getid=0;
+    public int $offse=0;
+    public int $limit=10;
     public function __construct(string $host,string $user,string $password,string $db){
         parent::__construct($host,$user,$password,$db);
         // parent::__construct();
@@ -48,6 +50,13 @@ class Crud extends Connection{
         }
 
         }
+        public function charlenset($char,$start,$total){
+            if(strlen($char) >= 20){
+                return substr($char,$start,$total)."...";;
+            }else{
+            return $char;
+            }
+        }
 
 
 
@@ -58,7 +67,7 @@ class Crud extends Connection{
         $e=$result->get_result()->fetch_all(MYSQLI_ASSOC);
         $_SESSION['crud']['id']=$e[0]['Field'];
         if(!$this->con->error){
-        $this->data="
+        $this->data="<h3 class='text-center text-muted'>&lt; {$_SESSION['crud']['d']} . {$_SESSION['crud']['t']} &gt;</h3>
         <button class='m-2' type='submit' onclick='deleteAll()'>Delete Selected Records</button>
         <button class='m-2 float-right' type='submit' onclick='load()'>Add</button>
         <table class='crudtable table table-sm table-borderless table-responsive-sm crudtable'>
@@ -101,7 +110,10 @@ foreach($result1 as $value){
         elseif((is_string($value1))){
             if(strlen($value1)>100){
                 $this->data .="
-                <td class='text-center'>".str_replace("'",'',substr($value1,0,100))."</td>";
+                <td class='text-center'>".str_replace("'",'',substr($value1,0,10))."</td>";
+            }else{
+                $this->data .="
+                <td class='text-center'>".str_replace("'",'',$value1)."</td>";
             }
         }
         $str=$value1??"";
@@ -134,17 +146,16 @@ $pages=0;
 if($this->pagination){
     $sql="SELECT * FROM {$this->table}";
         $e=$this->con->query($sql);
-        if($e->num_rows>0){
+        if($e->num_rows()>0){
     if(isset($_GET['page'])){
          $this->offset=($pages-1)*$this->limit;
-            $this->total_pages=ceil($e->num_rows/$this->limit);
+            $this->total_pages=ceil($e->num_rows()/$this->limit);
             // echo "Page set ".$e->num_rows;
             $previus=$pages-1;
             $nest=$pages+1;
-                 
     }else{
          $this->offset=(0-1)*$this->limit;
-            $this->total_pages=ceil($e->num_rows/$this->limit);
+            $this->total_pages=ceil($e->num_rows()/$this->limit);
             // echo "Page Not Set ".$e->num_rows;        
     }
         }

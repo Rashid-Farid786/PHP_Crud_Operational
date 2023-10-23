@@ -10,8 +10,8 @@
     <?php
      include_once realpath("vendor/autoload.php");
      use MyApp\Crud;
-     $con=new Crud("localhost","root","","v9");
-      $con->settable("flights_airports");
+     $con=new Crud("localhost","root","","sample");
+      $con->settable("user_details");
       //  $con->instance();
       //  $con->pagination(3,4);
     //   $e=$con->insert(["name"=>"test","email"=>"test@gmail.com","password"=>"1234",]);

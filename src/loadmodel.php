@@ -1,17 +1,17 @@
 <?php
 if (isset($_POST['up'])) {
   session_start();
-  function tag($type, $name,$value)
+  function tag($type, $name,$value,$reqiured)
   {
     if ($type == 'password') {
       return "<label class='form-label text-muted'>{$name}</label><br/>
-        <input class='form-control' type='{$type}' name='{$name}' id='text' placeholder='{$name}' value ='{$value}' required/><br/>
+        <input class='form-control' type='{$type}' name='{$name}' id='text' placeholder='{$name}' value ='{$value}' {$reqiured}/><br/>
         <label class='passbutton'>
 		<input class='showpassword' type='checkbox' name='checkbox' onclick='toggle()'/>
 		<span class='label ml-2'>show passwod</span>
 		</label>";
     } else {
-      return "<label class='form-label text-muted'>{$name}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$name}' value ='{$value}' required/><br/>";
+      return "<label class='form-label text-muted'>{$name}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$name}' value ='{$value}' {$reqiured}/><br/>";
     }
   }
   $con = mysqli_connect($_SESSION['crud']['h'], $_SESSION['crud']['u'], $_SESSION['crud']['p'], $_SESSION['crud']['d']);
@@ -36,6 +36,8 @@ if (isset($_POST['up'])) {
     $result1 = mysqli_query($con, $sql1);
     foreach ($e as $key => $value) {
       foreach(mysqli_fetch_assoc($result1) as $value1){
+        echo "<pre>";
+        print_r($value1);die;
       if ($value['Field'] == "id") {
         continue;
       } else {

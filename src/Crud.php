@@ -88,6 +88,9 @@ class Crud extends Connection{
    $result1=$this->customquery($sql);
 //    echo "<pre>";
 //    print_r($result1);die();
+if(!isset($result1) || empty($result1)){
+    echo "<h1>Empty Table</h1>";
+}else{
    $this->getid=$result1[0]['id']??"";
 foreach($result1 as $value){
         if(is_array($value) OR (is_object($value))){
@@ -103,19 +106,19 @@ foreach($result1 as $value){
         }
     //     echo "<pre>";
     //    echo $value1 ;die();
-        if($key == 0 && $value1 !=null){
-            $this->data .="
-            <td class='text-center'>".str_replace("'",'',$value1)."</td>";
-        }
-        elseif((is_string($value1))){
-            if(strlen($value1)>100){
-                $this->data .="
-                <td class='text-center'>".str_replace("'",'',substr($value1,0,10))."</td>";
-            }else{
-                $this->data .="
-                <td class='text-center'>".str_replace("'",'',$value1)."</td>";
-            }
-        }
+        // if($key == 0 && $value1 !=null){
+        //     $this->data .="
+        //     <td class='text-center'>".str_replace("'",'',$value1)."</td>";
+        // }
+// elseif((is_string($value1))){
+//             if(strlen($value1)>100){
+//                 $this->data .="
+//                 <td class='text-center'>".str_replace("'",'',substr($value1,0,10))."</td>";
+//             }else{
+//                 $this->data .="
+//                 <td class='text-center'>".str_replace("'",'',$value1)."</td>";
+//             }
+//         }
         $str=$value1??"";
         $this->data .="
         <td class='text-center'>".str_replace("'",'',$str)."</td>";
@@ -205,6 +208,7 @@ if($pages < $this->total_pages){
 $this->data.="</tr></table>";
 }   
     echo $this->data;
+}
 
     }
     private function close(){

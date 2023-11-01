@@ -1,7 +1,7 @@
 <?php
 namespace MyApp;
-use MyApp\Error;
 include_once "Error.php";
+use MyApp\Error;
 class ErrorResponse{
     public $status;
     public $message;

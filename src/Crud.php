@@ -106,19 +106,20 @@ foreach($result1 as $value){
         }
     //     echo "<pre>";
     //    echo $value1 ;die();
-        // if($key == 0 && $value1 !=null){
-        //     $this->data .="
-        //     <td class='text-center'>".str_replace("'",'',$value1)."</td>";
-        // }
-// elseif((is_string($value1))){
-//             if(strlen($value1)>100){
-//                 $this->data .="
-//                 <td class='text-center'>".str_replace("'",'',substr($value1,0,10))."</td>";
-//             }else{
-//                 $this->data .="
-//                 <td class='text-center'>".str_replace("'",'',$value1)."</td>";
-//             }
-//         }
+        if($key == 0 && $value1 !=null){
+            $this->data .="
+            <td class='text-center'>".str_replace("'",'',$value1)."</td>";
+        }
+elseif((is_string($value1))){
+            if(strlen($value1)>100){
+                $this->data .="
+                <td class='text-center'>".str_replace("'",'',substr($value1,0,10))."</td>";
+            }
+            // else{
+            //     $this->data .="
+            //     <td class='text-center'>".str_replace("'",'',$value1)."</td>";
+            // }
+        }
         $str=$value1??"";
         $this->data .="
         <td class='text-center'>".str_replace("'",'',$str)."</td>";

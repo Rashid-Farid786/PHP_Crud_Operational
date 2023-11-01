@@ -62,8 +62,11 @@ function deletedata(id){
         data:{de:id.id},
         success:function(re){
             // console.log(re);
-           if(re){
+           if(re == 1){
+            alert("Data Deleted");
                window.location.reload();
+           }else{
+            alert("Data Not Deleted");
            }
         }
     });

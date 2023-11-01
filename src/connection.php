@@ -1,7 +1,7 @@
 <?php
 namespace MyApp{
-    use MyApp\ErrorResponse;
-
+    // use MyApp\ErrorResponse;
+include "ErrorResponse.php";
 class Connection extends ErrorResponse{
     public string $user_name;
     public string $host_name;

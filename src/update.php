@@ -13,6 +13,7 @@ if(mysqli_num_rows($result)>0){
         $string.=$key."=".$value." , ";
     }
     $sql1="UPDATE {$_SESSION['crud']['t']} SET trim($string,',')";
+    echo $string;die;
     if(mysqli_query($con,$sql1)){
         echo 1;
     }else{

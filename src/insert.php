@@ -1,6 +1,7 @@
 <?php
 // echo "<pre>";
 // print_r($_POST);die();
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
 if($_POST['submit']){
     // if(){}
     session_start();
@@ -26,5 +27,6 @@ $sql="INSERT INTO {$_SESSION['crud']['t']} ({$keys}) VALUES({$val})";
  }
 }else{
     return false;
+}
 }
 ?>

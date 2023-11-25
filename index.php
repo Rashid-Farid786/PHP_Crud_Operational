@@ -10,14 +10,14 @@
     <?php
      include_once realpath("vendor/autoload.php");
      use MyApp\Crud;
-     $con=new Crud("localhost","root","","sample");
-      $con->settable("user_details");
+     $con=new Crud("localhost","root","","sms");
+      $con->settable("students");
       //  $con->instance();
       //  $con->pagination(3,4);
     //   $e=$con->insert(["name"=>"test","email"=>"test@gmail.com","password"=>"1234",]);
       //  echo "<pre>";
       //  print_r($e);
-      $con->instance();
+      $con->get_instance();
     ?>
 </body>
 </html>

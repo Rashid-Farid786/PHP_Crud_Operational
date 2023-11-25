@@ -6,5 +6,10 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'MyApp\\' => array($baseDir . '/src'),
+    'Medoo\\' => array($vendorDir . '/catfan/medoo/src'),
+    'Laravel\\SerializableClosure\\' => array($vendorDir . '/laravel/serializable-closure/src'),
+    'Invoker\\' => array($vendorDir . '/php-di/invoker/src'),
+    'DI\\' => array($vendorDir . '/php-di/php-di/src'),
 );

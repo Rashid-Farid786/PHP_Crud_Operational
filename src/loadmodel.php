@@ -3,15 +3,27 @@ if (isset($_POST['up'])) {
   session_start();
   function tag($type, $name,$value,$reqiured)
   {
+    if($reqiured=='NO'){
+      $requre='required';
+    }else{
+      $requre='';
+    }
+    $repname=str_replace('-',' ',str_replace('_',' ',$name));
+    $symble='';
+    if(empty($reqiured) || $reqiured == ''){
+      $symble='<span> class="red">*</span>';
+    }else{
+      $symble='<span> class="gray">(Optional)</span>';
+    }
     if ($type == 'password') {
-      return "<label class='form-label text-muted'>{$name}</label><br/>
-        <input class='form-control' type='{$type}' name='{$name}' id='text' placeholder='{$name}' value ='{$value}' $reqiured/><br/>
+      return "<label class='form-label text-muted'>{$repname} {$symble}</label><br/>
+        <input class='form-control' type='{$type}' name='{$name}' id='text' placeholder='{$repname}' value ='{$value}' $requre/><br/>
         <label class='passbutton'>
 		<input class='showpassword' type='checkbox' name='checkbox' onclick='toggle()'/>
 		<span class='label ml-2'>show passwod</span>
 		</label>";
     } else {
-      return "<label class='form-label text-muted'>{$name}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$name}' value ='{$value}' $reqiured/><br/>";
+      return "<label class='form-label text-muted'>{$repname}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$repname}' value ='{$value}' $requre/><br/>";
     }
   }
   $con = mysqli_connect($_SESSION['crud']['h'], $_SESSION['crud']['u'], $_SESSION['crud']['p'], $_SESSION['crud']['d']);
@@ -36,6 +48,8 @@ if (isset($_POST['up'])) {
     $result1 = mysqli_query($con, $sql1);
     $fields=mysqli_fetch_row($result1);
     $count=1;
+    // echo '<pre>';
+    // print_r($e);die;
     foreach ($e as $key => $value) {
       if ($value['Field'] == "id") {
         continue;
@@ -49,13 +63,13 @@ if (isset($_POST['up'])) {
             if (strtolower($value['Field']) == "password" || strtolower($value['Field']) == "pass") {
               $data .= tag("password", $value['Field'],$fields[$count],'');
             } else if (strtolower($value['Field']) == "email" || strtolower($value['Field']) == "mail") {
-              $data .= tag("email", $value['Field'],$fields[$count],'');
+              $data .= tag("email", $value['Field'],$fields[$count],$value['Null']);
             } else {
-              $data .= tag("text", $value['Field'],$fields[$count],'');
+              $data .= tag("text", $value['Field'],$fields[$count],$value['Null']);
             }
             break;
           case "longtext":
-            $data .= tag("textaria", $value['Field'],$fields[$count],'');
+            $data .= tag("textaria", $value['Field'],$fields[$count],$value['Null']);
             break;
           case "int":
           case "long":
@@ -66,21 +80,26 @@ if (isset($_POST['up'])) {
           case "decimal":
           case "float":
           case "real":
-            $data .= tag("number", $value['Field'],$value1,'');
+            $data .= tag("number", $value['Field'],$fields[$count],$value['Null']);
             break;
           case "bolean":
-            $data .= tag("text", $value['Field'],$value1,'');
+            $data .= tag("text", $value['Field'],$fields[$count],$value['Null']);
             break;
           case "timestamp":
-            break;
           case "date":
-            $data .= tag("date", $value['Field'],$value1,'');
+            $data .= tag("date", $value['Field'],$fields[$count],$value['Null']);
           case "enum":
           case "set":
-            $data .= "<select class='form-control' name='{$value['Field']}' required>
-                  <option value='0'>false</option>
-                  <option value='1'>True</option>
-                  </select>";
+            $i=explode(",",str_replace('set(','',str_replace(')','',str_replace('enum(','',$value['Type']))));
+            $data .= "
+            <label>{$value['Field']}</label>
+            <select class='form-control' name='{$value['Field']}' required>";
+                  foreach($i as $val){
+              $data.="<option value='{$val}'>{$val}</option>";
+                  }
+                  $data.="</select>";
+
+                  break;
           // default:
           // $data.="<input type='not' name='not'/>";
           // break;

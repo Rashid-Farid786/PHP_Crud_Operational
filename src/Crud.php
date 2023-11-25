@@ -60,7 +60,7 @@ class Crud extends Connection{
 
 
 
-    public function instance():void{
+    public function get_instance():void{
         $sql="SHOW FIELDS FROM {$this->table}";
         $result=$this->con->prepare($sql);
         $result->execute();
@@ -70,7 +70,7 @@ class Crud extends Connection{
         $this->data="<h3 class='text-center text-muted'>&lt; {$_SESSION['crud']['d']} . {$_SESSION['crud']['t']} &gt;</h3>
         <button class='m-2' type='submit' onclick='deleteAll()'>Delete Selected Records</button>
         <button class='m-2 float-right' type='submit' onclick='load()'>Add</button>
-        <table class='crudtable table table-sm table-borderless table-responsive-sm crudtable'>
+        <table class='crudtable table table-sm table-borderless table-responsive crudtable'>
         <thead class='thead-dark w-100'>
         <tr>
         <th class='text-center'><input type='checkbox' id='check' onclick='checkbox()'/></th>";
@@ -91,7 +91,7 @@ class Crud extends Connection{
 if(!isset($result1) || empty($result1)){
     echo "<h1>Empty Table</h1>";
 }else{
-   $this->getid=$result1[0]['id']??"";
+   $this->getid=reset($result1[0])??"";
 foreach($result1 as $value){
         if(is_array($value) OR (is_object($value))){
             $this->data.="

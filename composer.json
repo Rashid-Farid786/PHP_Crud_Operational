@@ -18,6 +18,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php":">=7.4"
+        "php":">=7.4",
+        "php-di/php-di": "^7.0",
+        "catfan/medoo": "^2.1"
     }
 }

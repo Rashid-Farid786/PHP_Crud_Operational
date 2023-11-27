@@ -84,13 +84,11 @@ class Crud extends Connection{
         </tr>
         </thead>";
     }
-    $sql="SELECT * FROM {$this->table} LIMIT {$this->offset},{$this->limit}";
-   $result1=$this->customquery($sql);
+    $sql1="SELECT * FROM {$this->table} LIMIT {$this->offset},{$this->limit}";
+   $result1=$this->customquery($sql1);
 //    echo "<pre>";
 //    print_r($result1);die();
-if(!isset($result1) || empty($result1)){
-    echo "<h1>Empty Table</h1>";
-}else{
+if(count($result1) != 0){
    $this->getid=reset($result1[0])??"";
 foreach($result1 as $value){
         if(is_array($value) OR (is_object($value))){
@@ -208,8 +206,8 @@ if($pages < $this->total_pages){
 }
 $this->data.="</tr></table>";
 }   
-    echo $this->data;
 }
+echo $this->data;
 
     }
     private function close(){

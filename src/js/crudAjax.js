@@ -25,18 +25,18 @@ function deleteAll(){
     });
     // console.log(arr);
     if(arr.length != 0){
-    if(confirm("Are you Reali to delete data")){
+        if(confirm("Aye You Sure To Delete  Selected Records")){
+
 //    console.log(arr);
    $.post({
     url:'src/delete.php',
     data:{de:arr},
     success:function(re){
         // console.log(re);
-        
             window.location.reload();
         }
 });
-}
+    }
     }else{
         alert("You Not Selected Deleted Value");
     }
@@ -57,19 +57,20 @@ function load(){
 
 
 function deletedata(id){
+    if(confirm("Are you Reali to delete data")){
     $.post({
         url:'src/delete.php',
         data:{de:id.id},
         success:function(re){
             // console.log(re);
            if(re == 1){
-            alert("Data Deleted");
                window.location.reload();
            }else{
             alert("Data Not Deleted");
            }
         }
     });
+}
 }
 
 

@@ -105,3 +105,10 @@ input[type=checkbox]{
 	left: 20px;
 	transition: all 0.5s;
 }
+
+.gary{
+    color:gray !important;
+}
+.red{
+    color:red !important;
+}

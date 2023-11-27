@@ -1,7 +1,7 @@
 <?php
 if (isset($_POST['up'])) {
   session_start();
-  function tag($type, $name,$value,$reqiured)
+  function tag($type, $name,$value,$reqiured,$cat)
   {
     if($reqiured=='NO'){
       $requre='required';
@@ -10,10 +10,10 @@ if (isset($_POST['up'])) {
     }
     $repname=str_replace('-',' ',str_replace('_',' ',$name));
     $symble='';
-    if(empty($reqiured) || $reqiured == ''){
-      $symble='<span> class="red">*</span>';
+    if($reqiured == "NO"){
+      $symble='<span class="red">*</span>';
     }else{
-      $symble='<span> class="gray">(Optional)</span>';
+      $symble='<span class="gray">(Optional)</span>';
     }
     if ($type == 'password') {
       return "<label class='form-label text-muted'>{$repname} {$symble}</label><br/>
@@ -22,8 +22,25 @@ if (isset($_POST['up'])) {
 		<input class='showpassword' type='checkbox' name='checkbox' onclick='toggle()'/>
 		<span class='label ml-2'>show passwod</span>
 		</label>";
-    } else {
-      return "<label class='form-label text-muted'>{$repname}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$repname}' value ='{$value}' $requre/><br/>";
+    }
+    else if($type == 'select'){
+      $i=explode(",",str_replace(array('set(','enum(',')',"'"),'',$cat));
+      $s = "
+            <label>{$name} {$symble}</label>
+            <select class='form-control' name='{$name}' required>";
+                  foreach($i as $val){
+                    $selected='';
+                    if($value == $val){
+                      $selected='selected';
+                    }
+                   
+              $s.="<option value='{$val}' id='{$value}' $selected>{$val}</option>";
+                  }
+                  $s.="</select>";
+                  return $s;
+    }
+    else {
+      return "<label class='form-label text-muted'>{$repname} {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$repname}' value ='{$value}' $requre/><br/>";
     }
   }
   $con = mysqli_connect($_SESSION['crud']['h'], $_SESSION['crud']['u'], $_SESSION['crud']['p'], $_SESSION['crud']['d']);
@@ -35,7 +52,7 @@ if (isset($_POST['up'])) {
     <div class='modal-dialog modal-dialog-scrollable' style='display:block;' role='document'>
       <div class='modal-content'>
         <div class='modal-header'>
-          <h5 class='modal-title'>Modal title</h5>
+          <h5 class='modal-title'>Update Form</h5>
           <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
             <span aria-hidden='true' onclick='model()'>&times;</span>
           </button>
@@ -54,22 +71,28 @@ if (isset($_POST['up'])) {
       if ($value['Field'] == "id") {
         continue;
       } else {
-        switch (strstr($value['Type'], "(", true)) {
+        $str='';
+        if(str_contains($value['Type'],'(')){
+          $str=strstr($value['Type'],"(",true);
+        }else{
+          $str=$value['Type'];
+        }
+        switch ($str) {
           case "text":
           case "char":
           case "varchar":
           case "mediumtext":
           case "tinytext":
             if (strtolower($value['Field']) == "password" || strtolower($value['Field']) == "pass") {
-              $data .= tag("password", $value['Field'],$fields[$count],'');
+              $data .= tag("password", $value['Field'],$fields[$count],'',$value['Type']);
             } else if (strtolower($value['Field']) == "email" || strtolower($value['Field']) == "mail") {
-              $data .= tag("email", $value['Field'],$fields[$count],$value['Null']);
+              $data .= tag("email", $value['Field'],$fields[$count],$value['Null'],$value['Type']);
             } else {
-              $data .= tag("text", $value['Field'],$fields[$count],$value['Null']);
+              $data .= tag("text", $value['Field'],$fields[$count],$value['Null'],$value['Type']);
             }
             break;
           case "longtext":
-            $data .= tag("textaria", $value['Field'],$fields[$count],$value['Null']);
+            $data .= tag("textaria", $value['Field'],$fields[$count],$value['Null'],$value['Type']);
             break;
           case "int":
           case "long":
@@ -80,24 +103,18 @@ if (isset($_POST['up'])) {
           case "decimal":
           case "float":
           case "real":
-            $data .= tag("number", $value['Field'],$fields[$count],$value['Null']);
+            $data .= tag("number", $value['Field'],$fields[$count],$value['Null'],$value['Type']);
             break;
           case "bolean":
-            $data .= tag("text", $value['Field'],$fields[$count],$value['Null']);
+            $data .= tag("text", $value['Field'],$fields[$count],$value['Null'],$value['Type']);
             break;
           case "timestamp":
           case "date":
-            $data .= tag("date", $value['Field'],$fields[$count],$value['Null']);
+            $data .= tag("date", $value['Field'],$fields[$count],$value['Null'],$value['Type']);
+            break;
           case "enum":
           case "set":
-            $i=explode(",",str_replace('set(','',str_replace(')','',str_replace('enum(','',$value['Type']))));
-            $data .= "
-            <label>{$value['Field']}</label>
-            <select class='form-control' name='{$value['Field']}' required>";
-                  foreach($i as $val){
-              $data.="<option value='{$val}'>{$val}</option>";
-                  }
-                  $data.="</select>";
+            $data .= tag("select", $value['Field'],$fields[$count],$value['Null'],$value['Type']);
 
                   break;
           // default:
@@ -107,7 +124,8 @@ if (isset($_POST['up'])) {
       }
       $count++;
   }
-  }
+}
+$data.='<input type="hidden" name="where" value="'.$_POST['up'].'"';
   $data .= "<br/><div class='text-center'><input type='submit' class='btn btn-primary' value='submit' name='submit'/></div></form></div>
     <div class='modal-footer'>
       <button type='button' class='btn btn-secondary' data-dismiss='modal' onclick='model()'>Close</button>

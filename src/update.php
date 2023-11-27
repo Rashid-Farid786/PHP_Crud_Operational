@@ -1,6 +1,6 @@
 <?php
-echo "<pre>";
-print_r($_POST);die();
+// echo "<pre>";
+// print_r($_POST);die();
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     if($_POST['submit']){
 session_start();

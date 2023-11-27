@@ -21,8 +21,7 @@ function tag($type, $name,$reqiured,$cat)
           <input class='showpassword' type='checkbox' name='checkbox' onclick='toggle()'/>
           <span class='label ml-2'>show passwod</span>
           </label>";
-      }
-      else if($type == 'select'){
+      }else if($type == 'select'){
         $i=explode(",",str_replace(array('set(','enum(',')',"'"),'',$cat));
         $s = "
               <label class='form-label text-muted'>{$repname} {$symble}</label>
@@ -32,12 +31,12 @@ function tag($type, $name,$reqiured,$cat)
                     }
                     $s.="</select><br/>";
                     return $s;
-      }
-      else if($type == "date"){
+      }else if($type == "date"){
         return "<label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$repname}' $requre/><br/>";
-      }
-      else if($type == 'file'){
-        return "<label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' $requre/><br/>";
+      }else if($type == 'file'){
+        return "<div classs='img-box'><label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' $requre/>
+        <img src='../uploads)/{$value}' alt='' class='img-fluid'/>
+        </div><br/>";
       }else {
         return "<label class='form-label text-muted'>{$repname} {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$repname}' $requre/><br/>";
       }
@@ -77,6 +76,9 @@ if (mysqli_num_rows($result) > 0) {
             case "varchar":
             case "mediumtext":
             case "tinytext":
+              if(str_contains($value['Field'],'img')){
+                $data.=tag("file", $value['Field'],$value['Null'],$value['Type']);
+              }else{
                 if(strtolower($value['Field']) == "password" || strtolower($value['Field']) == "pass"){
                     $data.=tag("password", $value['Field'],$value['Null'],$value['Type']);
                 }else if(strtolower($value['Field']) == "email" || strtolower($value['Field']) == "mail"){
@@ -84,6 +86,7 @@ if (mysqli_num_rows($result) > 0) {
                 }else{
                     $data.=tag("text", $value['Field'],$value['Null'],$value['Type']);
                 }
+              }
                 break;
             case "longtext":
                 $data.=tag("textaria", $value['Field'],$value['Null'],$value['Type']);

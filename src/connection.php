@@ -308,6 +308,63 @@ class Connection extends ErrorResponse{
             return(array)(new ErrorResponse($staus,$message,$error,$object));
     }
 
+    public function Upload_imgaes($files,$path='../../upload',$img_size=3145728,$img_ext=array('jpeg', 'JPEG', 'JPG', 'jpg', 'png', 'PNG', 'pdf', 'docx')){
+        $error = array();
+        $multi_files='';
+        if(is_array($files)){
+            foreach($files as $key=>$values ){
+
+                $name = $values['name'];
+		$size = $values['size'];
+		$tempname = $values['tmp_name'];
+		$type = $values['type'];
+		$refrence = explode('.', $name);
+		$file_exe = end($refrence);
+		$extention =$img_ext;
+		$new_name = time() . basename($name);
+		$fileupload = "/" . $new_name;
+		if (in_array($file_exe, $extention) === false) {
+			$error[] = "please select valid iamge jpg or png";
+		}
+		if ($size > $img_size) {
+			$error[] = "uploaded image 2MB or lower";
+		}
+		if (empty($error == true)) {
+			move_uploaded_file($tempname, $fileupload);
+		} else {
+			print_r($error);
+			die();
+		}
+        $multi_files.=$new_name.',';
+            }
+        }else{
+		$name = $files['name'];
+		$size = $files['size'];
+		$tempname = $files['tmp_name'];
+		$type = $files['type'];
+		$refrence = explode('.', $name);
+		$file_exe = end($refrence);
+		$extention =$img_ext;
+		$new_name = time() . basename($name);
+		$fileupload = "/" . $new_name;
+		if (in_array($file_exe, $extention) === false) {
+			$error[] = "please select valid iamge jpg or png";
+		}
+		if ($size > $img_size) {
+			$error[] = "uploaded image 2MB or lower";
+		}
+		if (empty($error == true)) {
+			move_uploaded_file($tempname, $fileupload);
+		} else {
+			print_r($error);
+			die();
+		}
+        $multi_files.=$new_name;
+    }
+    return trim($multi_files,',');
+
+    }
+
         // Close Database Connection
    
 }

@@ -35,7 +35,7 @@ function tag($type, $name,$reqiured,$cat)
         return "<label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$repname}' $requre/><br/>";
       }else if($type == 'file'){
         return "<div classs='img-box'><label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' $requre/>
-        <img src='../uploads)/{$value}' alt='' class='img-fluid'/>
+        <img src='' alt='' class='img-fluid'/>
         </div><br/>";
       }else {
         return "<label class='form-label text-muted'>{$repname} {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$repname}' $requre/><br/>";
@@ -56,7 +56,7 @@ if (mysqli_num_rows($result) > 0) {
                 </button>
               </div>
               <div class='modal-body'>
-              <form action='src/insert.php' name='form' method='post' class='form-group' anctype='multipart/form-data'>";
+              <form action='src/insert.php' name='form' method='post' class='form-group' enctype='multipart/form-data'>";
     $e = mysqli_fetch_all($result, MYSQLI_ASSOC);
     // echo "<pre>";
     // print_r($e);die;

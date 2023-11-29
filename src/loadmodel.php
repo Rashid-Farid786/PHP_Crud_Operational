@@ -23,10 +23,10 @@ if (isset($_POST['up'])) {
 		<span class='label ml-2'>show passwod</span>
 		</label>";
     }else if($type == "date"){
-      return "<label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$repname}' $requre/><br/>";
+      return "<label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' value ='{$value}' placeholder='{$repname}' $requre/><br/>";
     }else if($type == 'file'){
-      return "<div classs='img-box'><label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' $requre/>
-      <img src='../uploads)/{$value}' alt='' class='img-fluid'/>
+      return "<div classs='img-box'><label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' value ='{$value}'/>
+      <img src='../uploads/{$value}' alt='' class='img-fluid'/>
       </div><br/>";
     }else if($type == 'select'){
       $i=explode(",",str_replace(array('set(','enum(',')',"'"),'',$cat));
@@ -62,7 +62,7 @@ if (isset($_POST['up'])) {
           </button>
         </div>
         <div class='modal-body'>
-        <form action='src/update.php' name='form' method='post' class='form-group' anctype='multipart/form-data'>";
+        <form action='src/update.php' name='form' method='post' class='form-group' enctype='multipart/form-data'>";
   if (mysqli_num_rows($result) > 0) {
     $e = mysqli_fetch_all($result, MYSQLI_ASSOC);
     $sql1 = "SELECT * FROM {$_SESSION['crud']['t']} WHERE {$_SESSION['crud']['id']}={$_POST['up']}";
@@ -71,6 +71,7 @@ if (isset($_POST['up'])) {
     $count=1;
     // echo '<pre>';
     // print_r($e);die;
+    $crud_params='';
     foreach ($e as $key => $value) {
       if ($value['Field'] == "id") {
         continue;
@@ -81,6 +82,7 @@ if (isset($_POST['up'])) {
         }else{
           $str=$value['Type'];
         }
+        $crud_params.=$value['Field']."=>".$str.",";
         switch ($str) {
           case "text":
           case "char":
@@ -88,7 +90,7 @@ if (isset($_POST['up'])) {
           case "mediumtext":
           case "tinytext":
             if(str_contains($value['Field'],'img')){
-              $data.=tag("file", $value['Field'],$value['Null'],$value['Type']);
+              $data.=tag("file", $value['Field'],$fields[$count],$value['Null'],$value['Type']);
             }else{
             if (strtolower($value['Field']) == "password" || strtolower($value['Field']) == "pass") {
               $data .= tag("password", $value['Field'],$fields[$count],'',$value['Type']);
@@ -133,7 +135,8 @@ if (isset($_POST['up'])) {
       $count++;
   }
 }
-$data.='<input type="hidden" name="where" value="'.$_POST['up'].'"';
+$data.='<input type="hidden" name="where" value="'.$_POST['up'].'">';
+$data.='<input type="hidden" name="array" value="'.$crud_params.'">';
   $data .= "<br/><div class='text-center'><input type='submit' class='btn btn-primary' value='submit' name='submit'/></div></form></div>
     <div class='modal-footer'>
       <button type='button' class='btn btn-secondary' data-dismiss='modal' onclick='model()'>Close</button>

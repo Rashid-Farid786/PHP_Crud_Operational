@@ -25,7 +25,7 @@ if (isset($_POST['up'])) {
     }else if($type == "date"){
       return "<label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' value ='{$value}' placeholder='{$repname}' $requre/><br/>";
     }else if($type == 'file'){
-      return "<div classs='img-box'><label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' value ='{$value}'/>
+      return "<div class='img-box'><label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}[]' value ='{$value}' accept='image/*' multiple/>
       <img src='../uploads/{$value}' alt='' class='img-fluid'/>
       </div><br/>";
     }else if($type == 'select'){

@@ -34,7 +34,7 @@ function tag($type, $name,$reqiured,$cat)
       }else if($type == "date"){
         return "<label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$repname}' $requre/><br/>";
       }else if($type == 'file'){
-        return "<div classs='img-box'><label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' $requre/>
+        return "<div classs='img-box'><label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}[]' accept='image/*' multiple $requre/>
         <img src='' alt='' class='img-fluid'/>
         </div><br/>";
       }else {

@@ -1,9 +1,13 @@
 <?php
 use MyApp\Connection;
+
+
 // echo "<pre>";
 // print_r($_POST);die();
 // if(isset($_FILES)){
-    // }
+//     echo "<pre>";
+//     print_r($_FILES);die;
+//     }
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
         if($_POST['submit']){
             session_start();

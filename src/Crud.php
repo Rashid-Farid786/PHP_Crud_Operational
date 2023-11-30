@@ -9,6 +9,13 @@ class Crud extends Connection{
     public int $getid=0;
     public int $offse=0;
     public int $limit=10;
+    private bool $add_btn=false;
+    private bool $edit=false;
+    private bool $delete_list_btn=false;
+    private bool $delete_btn=false;
+    private bool $edit_btn=false;
+    private bool $table_title=false;
+    private  $fields=array();
     public function __construct(string $host,string $user,string $password,string $db){
         parent::__construct($host,$user,$password,$db);
         // parent::__construct();
@@ -29,6 +36,34 @@ class Crud extends Connection{
         //     }
         // }
     }
+
+
+    public function fields(){
+        $sql="SHOW FIELDS FROM {$this->table}";
+        $result=$this->con->prepare($sql);
+        $result->execute();
+        $e=$result->get_result()->fetch_all(MYSQLI_ASSOC);
+        $_SESSION['crud']['id']=$e[0]['Field'];
+        return $e;
+    }
+
+    public function delete_list_btn(){
+        if($this->delete_list_btn !==true){
+            echo "<button class='m-2' type='submit' onclick='deleteAll()'>Delete Selected Records</button>";
+        }
+    }
+
+    public function add_btn(){
+        if($this->add_btn !==true){
+            echo "<button class='m-2 float-right' type='submit' onclick='load()'>Add</button>";
+        }
+    }
+
+    public function table_title(){
+        if($this->table_title !==true){
+            echo "<h3 class='text-center text-muted'>&lt; {$_SESSION['crud']['d']} . {$_SESSION['crud']['t']} &gt;</h3>";
+        }
+    }
     public function get($sql){
         $e=$this->con->prepare($sql);
         $e->execute();
@@ -40,6 +75,30 @@ class Crud extends Connection{
         }
 
         }
+        public function unset_edit($bool){
+            $this->edit_btn=(bool)$bool;
+        }
+
+        public function unset_delete($bool){
+            $this->delete_btn=(bool)$bool;
+        }
+
+        public function unset_delete_list_btnt($bool){
+            $this->delete_list_btn=(bool)$bool;
+        }
+
+        public function unset_add($bool){
+            $this->add_btn=(bool)$bool;
+        }
+
+        public function unset_delete_list_btn($bool){
+            $this->delete_list_btn=(bool)$bool;
+        }
+
+        public function unset_table_title($bool){
+            $this->table_title=(bool)$bool;
+        }
+
 
 
         public   function query1($sql){
@@ -64,7 +123,11 @@ class Crud extends Connection{
 
 
     public function get_instance():void{
-        include (CRUD_PATH."/"."theme"."/".crud_config::$theme_name."/crud_list_view.php");
+        $this->fields=$this->fields();
+        $this->table_title();
+        $this->delete_list_btn();
+        $this->add_btn();
+        @include (CRUD_PATH."/"."theme"."/".crud_config::$theme_name."/crud_list_view.php");
     }
     private function close(){
         if($this->checkstatus){

@@ -17,7 +17,12 @@
     //   $e=$con->insert(["name"=>"test","email"=>"test@gmail.com","password"=>"1234",]);
       //  echo "<pre>";
       //  print_r($e);
-      $con->get_instance();
+      // $con->unset_add(true);
+      // $con->unset_delete(true);
+      // $con->unset_delete_list_btn(true);
+      // $con->unset_table_title(true);
+      // $con->unset_edit(true);
+      $con->get_instance(true);
     ?>
 </body>
 </html>

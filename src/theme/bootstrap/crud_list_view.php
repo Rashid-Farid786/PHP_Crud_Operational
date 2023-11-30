@@ -1,25 +1,24 @@
 <?php
 
-$sql="SHOW FIELDS FROM {$this->table}";
-$result=$this->con->prepare($sql);
-$result->execute();
-$e=$result->get_result()->fetch_all(MYSQLI_ASSOC);
-$_SESSION['crud']['id']=$e[0]['Field'];
 if(!$this->con->error){
-$this->data="<h3 class='text-center text-muted'>&lt; {$_SESSION['crud']['d']} . {$_SESSION['crud']['t']} &gt;</h3>
-<button class='m-2' type='submit' onclick='deleteAll()'>Delete Selected Records</button>
-<button class='m-2 float-right' type='submit' onclick='load()'>Add</button>
+$this->data="
 <table class='crudtable table table-sm table-borderless table-responsive crudtable'>
 <thead class='thead-dark w-100'>
 <tr>
 <th class='text-center'><input type='checkbox' id='check' onclick='checkbox()'/></th>";
-foreach($e as $key=>$value){
+foreach($this->fields as $key=>$value){
     $this->data.="
     <th scope='col' class='text-center'>".$value['Field']."</th>";
 }
+if($this->edit_btn !=true){
 $this->data.="
-<th class='text-center'>Update</th>
-<th class='text-center'>Delete</th>
+<th class='text-center'>Update</th>";
+}
+if($this->delete_btn !=true){
+$this->data.="
+<th class='text-center'>Delete</th>";
+}
+$this->data.="
 </tr>
 </thead>";
 }
@@ -31,11 +30,13 @@ if(count($result1) != 0){
 $this->getid=reset($result1[0])??"";
 foreach($result1 as $value){
 if(is_array($value) OR (is_object($value))){
+    if($this->delete_list_btn !=true){
     $this->data.="
     <tr>
     <td class='text-center'>
     <input type='checkbox' value='{$this->getid}' name='checkbox'/>
     </td>";
+}
     // $id=$this->getid+1;
 foreach($value as $key=>$value1){
 if($key == 'id'){
@@ -61,17 +62,23 @@ $str=$value1??"";
 $this->data .="
 <td class='text-center'>".str_replace("'",'',$str)."</td>";
 }
+if($this->edit_btn !=true){
 $this->data.="
 <td class='text-center'>
 <button id='".$this->getid."' onclick='updateOpen(this)'>
 &#8634;
 </button>
-</td>
+</td>";
+}
+if($this->delete_btn !=true){
+    $this->data.="
 <td class='text-center'>
 <button id='".$this->getid."' onclick='deletedata(this)'>
 X
 </button>
-</td>
+</td>";
+}
+$this->data.="
 </tr>";
 $this->getid++;
 }

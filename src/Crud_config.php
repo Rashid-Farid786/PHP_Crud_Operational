@@ -14,6 +14,7 @@ class Crud_config{
 
     // theme
     public static $theme_name='bootstrap';
+    public static $theme_path='theme';
 
 }
 

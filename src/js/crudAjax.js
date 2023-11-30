@@ -45,7 +45,7 @@ function deleteAll(){
 function load(){
     
     $.post({
-        url:'src/adddata.php',
+        url:'src/crud_add.php',
         success:function(re){
             // console.log(re);
             $('body').append(re);

@@ -16,6 +16,10 @@ class Crud extends Connection{
     private bool $edit_btn=false;
     private bool $table_title=false;
     private  $fields=array();
+    private  $join=array();
+    private  $relation=array();
+    private  $column_cut=array();
+    public array  $btns=array();
     public function __construct(string $host,string $user,string $password,string $db){
         parent::__construct($host,$user,$password,$db);
         // parent::__construct();
@@ -75,6 +79,27 @@ class Crud extends Connection{
         }
 
         }
+
+        public function create_btn($name='',$link='',$class=false,$attr=array()){
+            // if($class != false){
+            //     $add_class=$class;
+            // }
+            // if(count($attr) != 0){
+            //     foreach($attr as $key=>$value){
+            //         $add_attr.="{$key}='{$value}' ";
+            //     }
+            // }
+            $this->btns[]= ['name'=>$name,'link'=>$link,'class'=>$class,'attr'=>$attr];
+        }
+
+        public function join($pri_column,$for_column,$rel_table){}
+
+        public function relation($pri_column,$for_column,$rel_table){}
+
+        public function coloumn_class($pri_column,$for_column,$rel_table){}
+
+        public function coloumn_cut($pri_column,$for_column,$rel_table){}
+
         public function unset_edit($bool){
             $this->edit_btn=(bool)$bool;
         }

@@ -21,7 +21,8 @@
       // $con->unset_delete(true);
       // $con->unset_delete_list_btn(true);
       // $con->unset_table_title(true);
-      // $con->unset_edit(true);
+      echo "<pre>";
+      print_r($_SERVER);
       $con->get_instance(true);
     ?>
 </body>

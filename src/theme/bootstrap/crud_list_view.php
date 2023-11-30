@@ -78,6 +78,11 @@ X
 </button>
 </td>";
 }
+if(count($this->btns)>0){
+    foreach($this->btns as $ke=>$value){
+        $this->data.="<td><a href='{$link}' class='{$add_class}' $add_attr >{$name}</a></td>";
+    }
+}
 $this->data.="
 </tr>";
 $this->getid++;

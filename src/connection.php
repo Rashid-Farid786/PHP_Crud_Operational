@@ -1,30 +1,24 @@
 <?php
 namespace MyApp{
     use MyApp\ErrorResponse;
+    use MyApp\Crud_config;
 class Connection extends ErrorResponse{
-    public string $user_name;
-    public string $host_name;
-    public string $password;
-    public string $db_name;
     public object $con;
     public string $table;
     public int $id=0;
     public $data;
     public $checkstatus=false;
-    public int $offset=0;
-    public int $limit=100;
     public $crud;
-    public bool $pagination=false;
-    public int $total_pages;
+
     // create Connection
-    public function __construct(string $host,string $user,string $password,string $db){
+    public function __construct(){
         // parent::__construct();
         if(!$this->checkstatus){
-            $this->host_name=$host;
-            $this->user_name=$user;
-            $this->password=$password;
-            $this->db_name=$db;
-            $this->con=mysqli_connect($this->host_name,$this->user_name,$this->password,$this->db_name);
+            $host_name=Crud_config::$db_host;
+            $user_name=Crud_config::$db_user;
+            $password=Crud_config::$db_password;
+            $db_name=Crud_config::$db_name;
+            $this->con=mysqli_connect($host_name,$user_name,$password,$db_name);
             if(!$this->con->connect_error){
                 $this->checkstatus=true;
                 // $this->crus=new Crud();
@@ -35,16 +29,7 @@ class Connection extends ErrorResponse{
         }
     }
 
-    // select database table
-    public function settable($table){
-        if($this->checkstatus){
-        $this->table=$table;
-        session_start();
-        $_SESSION['crud']=["u"=>$this->user_name,"h"=>$this->host_name,"d"=>$this->db_name,"t"=>$this->table,"p"=>$this->password];
-        }else{
-            echo "Connect error";
-        }
-    }
+
     public function changetable($table){
         if($this->checkstatus){
         $this->table=$table;
@@ -271,98 +256,12 @@ class Connection extends ErrorResponse{
     }
 
     // Check Selected Data Base Table
-    public function gettable():string{
-        return $this->table;
-    }
-    private function foreach($data){
-        $edata=[];
-        foreach($data as $key=>$value){
-        }
-    }
-    public function pagination(int $offset,int $limit=null){
-        $this->offset=$offset;
-        if($limit != null){
-            $this->limit=$limit;
-        }
-        $this->pagination=true;
-    }
-    
-    
-   
-    // add Data Width Image
-    public function add(){}
+  
 
     // Cover Array To Object for Response
-    private function convert(bool $staus,String $message,string $error,$data):array{
-        $object=object;
-        if(is_array($data)){
-            $object=$data;
-            }else if(is_object($data)){
-                $object=$data;
-            }else if(is_bool($data)){
-                $object=$data;
-            }else{
-                $object=["data"=>"none"];
-            }
-            return(array)(new ErrorResponse($staus,$message,$error,$object));
-    }
+    
 
-    public function Upload_imgaes($files,$path='../../upload',$img_size=3145728,$img_ext=array('jpeg', 'JPEG', 'JPG', 'jpg', 'png', 'PNG', 'pdf', 'docx')){
-        $error = array();
-        $multi_files='';
-        if(is_array($files)){
-            foreach($files as $key=>$values ){
-
-                $name = $values['name'];
-		$size = $values['size'];
-		$tempname = $values['tmp_name'];
-		$type = $values['type'];
-		$refrence = explode('.', $name);
-		$file_exe = end($refrence);
-		$extention =$img_ext;
-		$new_name = time() . basename($name);
-		$fileupload = "/" . $new_name;
-		if (in_array($file_exe, $extention) === false) {
-			$error[] = "please select valid iamge jpg or png";
-		}
-		if ($size > $img_size) {
-			$error[] = "uploaded image 2MB or lower";
-		}
-		if (empty($error == true)) {
-			move_uploaded_file($tempname, $fileupload);
-		} else {
-			print_r($error);
-			die();
-		}
-        $multi_files.=$new_name.',';
-            }
-        }else{
-		$name = $files['name'];
-		$size = $files['size'];
-		$tempname = $files['tmp_name'];
-		$type = $files['type'];
-		$refrence = explode('.', $name);
-		$file_exe = end($refrence);
-		$extention =$img_ext;
-		$new_name = time() . basename($name);
-		$fileupload = "/" . $new_name;
-		if (in_array($file_exe, $extention) === false) {
-			$error[] = "please select valid iamge jpg or png";
-		}
-		if ($size > $img_size) {
-			$error[] = "uploaded image 2MB or lower";
-		}
-		if (empty($error == true)) {
-			move_uploaded_file($tempname, $fileupload);
-		} else {
-			print_r($error);
-			die();
-		}
-        $multi_files.=$new_name;
-    }
-    return trim($multi_files,',');
-
-    }
+ 
 
         // Close Database Connection
    

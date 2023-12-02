@@ -18,6 +18,10 @@ if($this->delete_btn !=true){
 $this->data.="
 <th class='text-center'>Delete</th>";
 }
+if(count($this->btns)>0){
+    $this->data.="
+    <th class='text-center'>Custom Buttons</th>";
+}
 $this->data.="
 </tr>
 </thead>";
@@ -79,9 +83,21 @@ X
 </td>";
 }
 if(count($this->btns)>0){
+    $this->data.="<td class='w-auto p-2'>";
     foreach($this->btns as $ke=>$value){
-        $this->data.="<td><a href='{$link}' class='{$add_class}' $add_attr >{$name}</a></td>";
+        $add_class='';
+        $add_attr='';
+        if($value['class'] !==''){
+            $add_class=$value['class'];
+        }
+        if(count($value['attr'])>0){
+            foreach($value['attr'] as $key1=>$value1){
+            $add_attr.="{$key1}='{$value1}' ";
+            }
+        }
+        $this->data.="<a href='{$value['link']}' class='inline d-inline m-2 {$add_class}' $add_attr >{$value['name']}</a>";
     }
+    $this->data.="</td>";
 }
 $this->data.="
 </tr>";

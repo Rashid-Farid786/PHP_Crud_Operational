@@ -8,9 +8,9 @@
 </head>
 <body>
     <?php
-     include_once realpath("vendor/autoload.php");
+     include_once realpath("./vendor/autoload.php");
      use MyApp\Crud;
-     $con=new Crud("localhost","root","","sms");
+     $con=new Crud();
       $con->settable("students");
       //  $con->instance();
       //  $con->pagination(3,4);
@@ -20,9 +20,9 @@
       // $con->unset_add(true);
       // $con->unset_delete(true);
       // $con->unset_delete_list_btn(true);
-      // $con->unset_table_title(true);
-      echo "<pre>";
-      print_r($_SERVER);
+      $con->unset_table_title(true);
+      $con->create_btn('button1','https://youtube.com','btn btn-primary',array('target'=>'_blank'));
+      $con->create_btn('button2','','btn btn-primary');
       $con->get_instance(true);
     ?>
 </body>

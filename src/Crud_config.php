@@ -16,6 +16,9 @@ class Crud_config{
     public static $theme_name='bootstrap';
     public static $theme_path='theme';
 
+    // pagination
+    public static $offset=1;
+    public static $limit=100;
 }
 
 ?>

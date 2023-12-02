@@ -6,39 +6,48 @@ define('CRUD_PATH', str_replace('\\', '/', dirname(__file__))); // str_replace -
 // require (CRUD_PATH . '/functions.php');
 // use MyApp\ErrorResponse;
 class Crud extends Connection{
-    public int $getid=0;
-    public int $offse=0;
-    public int $limit=10;
+    private int $getid=0;
     private bool $add_btn=false;
     private bool $edit=false;
     private bool $delete_list_btn=false;
     private bool $delete_btn=false;
     private bool $edit_btn=false;
     private bool $table_title=false;
+    private int $offset;
+    private int $limit;
+    private bool $pagination=false;
+    private int $total_pages;
     private  $fields=array();
+    private  $types=array();
+    private  $null=array();
     private  $join=array();
     private  $relation=array();
     private  $column_cut=array();
     public array  $btns=array();
-    public function __construct(string $host,string $user,string $password,string $db){
-        parent::__construct($host,$user,$password,$db);
-        // parent::__construct();
-        // new Connection($host,$user,$password,$db);
 
-        // $this->host_name=$host;
-        // $this->user_name=$user;
-        // $this->password=$password;
-        // $this->db_name=$db;
-        // if(!$this->checkstatus){
-        //     $this->con=mysqli_connect($this->host_name,$this->user_name,$this->password,$this->db_name);
-        //     if(!$this->con->connect_error){
-        //         $this->checkstatus=true;
-        //         // $this->crus=new Crud();
-        //     }else{
-        //         $this->checkstatus=false;
-        //         die($this->con->connect_error);
-        //     }
-        // }
+    
+    public function __construct(){
+        parent::__construct();
+        $this->offset=Crud_config::$offset;
+        $this->limit=Crud_config::$limit;
+    }
+
+    private function create_tag($name,$content,$class=false,$attr=[]){
+
+        $tag="<{$name}";
+        if($class != false){
+            $tag.=" {$class} ";
+        }
+        if(count($attr)>0){
+            foreach($attrc as $key=>$value){
+                $tag.=" {$key}=='{$value}' ";
+            }
+        }
+        $tag.=">{$content}</{$name}>";
+    }
+
+    private function ccreate_btn($name,$link=false,$type=false,$class=false,$attr=[]){
+        
     }
 
 
@@ -50,6 +59,13 @@ class Crud extends Connection{
         $_SESSION['crud']['id']=$e[0]['Field'];
         return $e;
     }
+
+        // select database table
+        public function settable($table){
+            $this->table=$table;
+            session_start();
+            $_SESSION['crud']=["u"=>Crud_config::$db_user,"h"=>Crud_config::$db_host,"d"=>Crud_config::$db_name,"t"=>$this->table,"p"=>Crud_config::$db_password];
+        }
 
     public function delete_list_btn(){
         if($this->delete_list_btn !==true){
@@ -81,14 +97,6 @@ class Crud extends Connection{
         }
 
         public function create_btn($name='',$link='',$class=false,$attr=array()){
-            // if($class != false){
-            //     $add_class=$class;
-            // }
-            // if(count($attr) != 0){
-            //     foreach($attr as $key=>$value){
-            //         $add_attr.="{$key}='{$value}' ";
-            //     }
-            // }
             $this->btns[]= ['name'=>$name,'link'=>$link,'class'=>$class,'attr'=>$attr];
         }
 
@@ -159,6 +167,94 @@ class Crud extends Connection{
           $this->con->close();
           $this->checkstatus=false;
         }
+    }
+
+    public function gettable():string{
+        return $this->table;
+    }
+    private function foreach($data){
+        $edata=[];
+        foreach($data as $key=>$value){
+        }
+    }
+
+    public function pagination(int $offset,int $limit=null){
+        $this->offset=$offset;
+        if($limit != null){
+            $this->limit=$limit;
+        }
+        $this->pagination=true;
+    }
+
+    private function convert(bool $staus,String $message,string $error,$data):array{
+        $object=object;
+        if(is_array($data)){
+            $object=$data;
+            }else if(is_object($data)){
+                $object=$data;
+            }else if(is_bool($data)){
+                $object=$data;
+            }else{
+                $object=["data"=>"none"];
+            }
+            return(array)(new ErrorResponse($staus,$message,$error,$object));
+    }
+
+    public function Upload_imgaes($files,$path='../../upload',$img_size=3145728,$img_ext=array('jpeg', 'JPEG', 'JPG', 'jpg', 'png', 'PNG', 'pdf', 'docx')){
+        $error = array();
+        $multi_files='';
+        if(is_array($files)){
+            foreach($files as $key=>$values ){
+
+                $name = $values['name'];
+		$size = $values['size'];
+		$tempname = $values['tmp_name'];
+		$type = $values['type'];
+		$refrence = explode('.', $name);
+		$file_exe = end($refrence);
+		$extention =$img_ext;
+		$new_name = time() . basename($name);
+		$fileupload = "/" . $new_name;
+		if (in_array($file_exe, $extention) === false) {
+			$error[] = "please select valid iamge jpg or png";
+		}
+		if ($size > $img_size) {
+			$error[] = "uploaded image 2MB or lower";
+		}
+		if (empty($error == true)) {
+			move_uploaded_file($tempname, $fileupload);
+		} else {
+			print_r($error);
+			die();
+		}
+        $multi_files.=$new_name.',';
+            }
+        }else{
+		$name = $files['name'];
+		$size = $files['size'];
+		$tempname = $files['tmp_name'];
+		$type = $files['type'];
+		$refrence = explode('.', $name);
+		$file_exe = end($refrence);
+		$extention =$img_ext;
+		$new_name = time() . basename($name);
+		$fileupload = "/" . $new_name;
+		if (in_array($file_exe, $extention) === false) {
+			$error[] = "please select valid iamge jpg or png";
+		}
+		if ($size > $img_size) {
+			$error[] = "uploaded image 2MB or lower";
+		}
+		if (empty($error == true)) {
+			move_uploaded_file($tempname, $fileupload);
+		} else {
+			print_r($error);
+			die();
+		}
+        $multi_files.=$new_name;
+    }
+    return trim($multi_files,',');
+
     }
 }
 

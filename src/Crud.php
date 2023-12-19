@@ -32,7 +32,11 @@ class Crud extends Connection{
         $this->limit=Crud_config::$limit;
     }
 
-    private function create_tag($name,$content,$class=false,$attr=[]){
+    private function _pase($value){
+
+    }
+
+    private function open_tag($name,$content,$class=false,$attr=[]){
 
         $tag="<{$name}";
         if($class != false){
@@ -44,6 +48,11 @@ class Crud extends Connection{
             }
         }
         $tag.=">{$content}</{$name}>";
+        return $tag;
+    }
+
+    private function close_tag($name){
+        return "</{$name}>";
     }
 
     private function ccreate_btn($name,$link=false,$type=false,$class=false,$attr=[]){
@@ -84,17 +93,7 @@ class Crud extends Connection{
             echo "<h3 class='text-center text-muted'>&lt; {$_SESSION['crud']['d']} . {$_SESSION['crud']['t']} &gt;</h3>";
         }
     }
-    public function get($sql){
-        $e=$this->con->prepare($sql);
-        $e->execute();
 
-        if(!$this->con->error){
-            return $e->get_result()->fetch_all();
-        }else{
-            return false;
-        }
-
-        }
 
         public function create_btn($name='',$link='',$class=false,$attr=array()){
             $this->btns[]= ['name'=>$name,'link'=>$link,'class'=>$class,'attr'=>$attr];

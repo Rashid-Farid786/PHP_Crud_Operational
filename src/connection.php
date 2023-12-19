@@ -29,6 +29,18 @@ class Connection extends ErrorResponse{
         }
     }
 
+    public function get($sql){
+        $e=$this->con->prepare($sql);
+        $e->execute();
+
+        if(!$this->con->error){
+            return $e->get_result()->fetch_all();
+        }else{
+            return false;
+        }
+
+        }
+
 
     public function changetable($table){
         if($this->checkstatus){

@@ -29,16 +29,7 @@ const SMTP_USERNAME='rashidfarid40@gmail.com';
 const SMTP_PASS='kbnb rcnk rwld dvjk';
 const SMTP_PORT='465';
 
-function clear(){
-echo "<script>window.sessionStorage.removeItem('alert');window.sessionStorage.removeItem('success')</script>";
-}
 
-function alert($message){
-echo "<script>window.sessionStorage.setItem('alert',$message);</script>";
-}
-function message($message){
-echo "<script>window.sessionStorage.setItem('success',$message)</script>";
-}
 
 if( STATUS == 'on'){
 echo '<style>body{padding:0; margin:0; width:100%; height:100vh; display:flex; align-item:center; align-conten:center; justify-content:center; color:gray; background:#f1f1f1;}</style><div style="position:absolute; top:50%; height:50%; transform:translation(-50%,-50%); font-size:50px;">Website In Progress</div>';die();
@@ -53,10 +44,5 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 }
-
-function inc($file){
-include "{$file}.php";
-}
-
 
 ?>

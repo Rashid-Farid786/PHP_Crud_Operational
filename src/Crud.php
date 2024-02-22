@@ -59,6 +59,17 @@ class Crud extends Connection{
         
     // }
 
+    public function clear(){
+        echo "<script>window.sessionStorage.removeItem('alert');window.sessionStorage.removeItem('success')</script>";
+    }
+        
+    public function alert($message){
+        echo "<script>window.sessionStorage.setItem('alert',$message);</script>";
+    }
+    public function message($message){
+        echo "<script>window.sessionStorage.setItem('success',$message)</script>";
+    }
+
 
     public function fields(){
         $sql="SHOW FIELDS FROM {$this->table}";
@@ -70,11 +81,11 @@ class Crud extends Connection{
     }
 
         // select database table
-        public function settable($table){
-            $this->table=$table;
-            session_start();
-            $_SESSION['crud']=["u"=>Crud_config::$db_user,"h"=>Crud_config::$db_host,"d"=>Crud_config::$db_name,"t"=>$this->table,"p"=>Crud_config::$db_password];
-        }
+    public function settable($table){
+        $this->table=$table;
+        session_start();
+        $_SESSION['crud']=["u"=>Crud_config::$db_user,"h"=>Crud_config::$db_host,"d"=>Crud_config::$db_name,"t"=>$this->table,"p"=>Crud_config::$db_password];
+    }
 
     public function delete_list_btn(){
         if($this->delete_list_btn !==true){
@@ -95,64 +106,60 @@ class Crud extends Connection{
     }
 
 
-        public function create_btn($name='',$link='',$class=false,$attr=array()){
+    public function create_btn($name='',$link='',$class=false,$attr=array()){
             $this->btns[]= ['name'=>$name,'link'=>$link,'class'=>$class,'attr'=>$attr];
-        }
+    }
 
-        public function join($pri_column,$for_column,$rel_table){}
+    public function join($pri_column,$for_column,$rel_table){}
 
-        public function relation($pri_column,$for_column,$rel_table){}
+    public function relation($pri_column,$for_column,$rel_table){}
 
-        public function coloumn_class($pri_column,$for_column,$rel_table){}
+    public function coloumn_class($pri_column,$for_column,$rel_table){}
 
-        public function coloumn_cut($pri_column,$for_column,$rel_table){}
+    public function coloumn_cut($pri_column,$for_column,$rel_table){}
 
-        public function unset_edit($bool){
-            $this->edit_btn=(bool)$bool;
-        }
+    public function unset_edit($bool){
+        $this->edit_btn=(bool)$bool;
+    }
 
-        public function unset_delete($bool){
-            $this->delete_btn=(bool)$bool;
-        }
+    public function unset_delete($bool){
+        $this->delete_btn=(bool)$bool;
+    }
 
-        public function unset_delete_list_btnt($bool){
-            $this->delete_list_btn=(bool)$bool;
-        }
+    public function unset_delete_list_btnt($bool){
+        $this->delete_list_btn=(bool)$bool;
+    }
 
-        public function unset_add($bool){
-            $this->add_btn=(bool)$bool;
-        }
+    public function unset_add($bool){
+        $this->add_btn=(bool)$bool;
+    }
 
-        public function unset_delete_list_btn($bool){
-            $this->delete_list_btn=(bool)$bool;
-        }
+    public function unset_delete_list_btn($bool){
+        $this->delete_list_btn=(bool)$bool;
+    }
 
-        public function unset_table_title($bool){
-            $this->table_title=(bool)$bool;
-        }
+    public function unset_table_title($bool){
+        $this->table_title=(bool)$bool;
+    }
 
+    public   function query1($sql){
+    $e=$this->con->prepare($sql);
+    $e->execute();
 
+    if(!$this->con->error){
+        return true;
+    }else{
+        return false;
+    }
 
-        public   function query1($sql){
-        $e=$this->con->prepare($sql);
-        $e->execute();
-
-        if(!$this->con->error){
-            return true;
+    }
+    public function charlenset($char,$start,$total){
+        if(strlen($char) >= 20){
+            return substr($char,$start,$total)."...";
         }else{
-            return false;
+        return $char;
         }
-
-        }
-        public function charlenset($char,$start,$total){
-            if(strlen($char) >= 20){
-                return substr($char,$start,$total)."...";
-            }else{
-            return $char;
-            }
-        }
-
-
+    }
 
     public function get_instance():void{
         $this->fields=$this->fields();

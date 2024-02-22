@@ -266,17 +266,6 @@ class Connection extends ErrorResponse{
             return $this->convert(false,"Deleted Data Not Found",$this->con->error,"");
         }
     }
-
-    // Check Selected Data Base Table
-  
-
-    // Cover Array To Object for Response
-    
-
- 
-
-        // Close Database Connection
-   
 }
 
 }

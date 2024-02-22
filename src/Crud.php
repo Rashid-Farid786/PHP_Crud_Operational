@@ -55,9 +55,9 @@ class Crud extends Connection{
         return "</{$name}>";
     }
 
-    private function ccreate_btn($name,$link=false,$type=false,$class=false,$attr=[]){
+    // private function create_btn($name,$link=false,$type=false,$class=false,$attr=[]){
         
-    }
+    // }
 
 
     public function fields(){
@@ -159,7 +159,7 @@ class Crud extends Connection{
         $this->table_title();
         $this->delete_list_btn();
         $this->add_btn();
-        @include (CRUD_PATH."/"."theme"."/".crud_config::$theme_name."/crud_list_view.php");
+        @include (CRUD_PATH."/".crud_config::$theme_path."/".crud_config::$theme_name."/crud_list_view.php");
     }
     private function close(){
         if($this->checkstatus){

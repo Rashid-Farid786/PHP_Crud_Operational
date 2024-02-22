@@ -43,7 +43,7 @@ if (isset($_POST['up'])) {
                   }
                   $s.="</select>";
                   return $s;
-    }else {
+    }else  {
       return "<label class='form-label text-muted'>{$repname} {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$repname}' value ='{$value}' $requre/><br/>";
     }
   }
@@ -73,7 +73,7 @@ if (isset($_POST['up'])) {
     // print_r($e);die;
     $crud_params='';
     foreach ($e as $key => $value) {
-      if ($value['Field'] == "id") {
+      if ($value['Key'] == "PRI") {
         continue;
       } else {
         $str='';

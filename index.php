@@ -11,7 +11,7 @@
      include_once realpath("./vendor/autoload.php");
      use MyApp\Crud;
      $con=new Crud();
-      $con->settable("students");
+      $con->settable("operatio");
       //  $con->instance();
       //  $con->pagination(3,4);
     //   $e=$con->insert(["name"=>"test","email"=>"test@gmail.com","password"=>"1234",]);

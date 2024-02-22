@@ -45,7 +45,7 @@ function deleteAll(){
 function load(){
     
     $.post({
-        url:'src/crud_add.php',
+        url:'src/theme/bootstrap/crud_add.php',
         success:function(re){
             // console.log(re);
             $('body').append(re);
@@ -76,7 +76,7 @@ function deletedata(id){
 
 function updateOpen(id){
     $.post({
-        url:'src/loadmodel.php',
+        url:'src/theme/bootstrap/crud_edit.php',
         data:{up:id.id},
         success:function(data,status,xhr){
             $('body').append(data);

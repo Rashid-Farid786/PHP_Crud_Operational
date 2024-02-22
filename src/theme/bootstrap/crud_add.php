@@ -33,6 +33,8 @@ function tag($type, $name,$reqiured,$cat)
                     return $s;
       }else if($type == "date"){
         return "<label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$repname}' $requre/><br/>";
+      }else if($type == "time"){
+        return "<label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}' placeholder='{$repname}' $requre/><br/>";
       }else if($type == 'file'){
         return "<div classs='img-box'><label class='form-label text-muted'>{$repname}  {$symble}</label><br/><input class='form-control' type='{$type}' name='{$name}[]' accept='image/*' multiple $requre/>
         <img src='' alt='' class='img-fluid'/>
@@ -61,7 +63,7 @@ if (mysqli_num_rows($result) > 0) {
     // echo "<pre>";
     // print_r($e);die;
     foreach ($e as $key => $value) {
-            if($value['Field'] == "id"){
+            if($value['Key'] == "PRI"){
                 continue;
             }else{
               $str='';
@@ -102,19 +104,22 @@ if (mysqli_num_rows($result) > 0) {
             case "real":
                 $data.=tag("number", $value['Field'],$value['Null'],$value['Type']);
                 break;
-                case "timestamp":
-                    $data.=tag("date", $value['Field'],$value['Null'],$value['Type']);
+            case "timestamp":
+                $data.=tag("datetime-local", $value['Field'],$value['Null'],$value['Type']);
                 break;
-                case "date":
-                    $data.=tag("date", $value['Field'],$value['Null'],$value['Type']);
-                    break;
+            case "date":
+                $data.=tag("date", $value['Field'],$value['Null'],$value['Type']);
+                break;
+            case "time":
+                $data.=tag("time", $value['Field'],$value['Null'],$value['Type']);
+                break;
             case "enum":
             case "set":
                 $data .= tag("select", $value['Field'],$value['Null'],$value['Type']);
                 break;
-                case "bolean":
-                  $data.=tag("text", $value['Field'],$value['Null'],$value['Type']);
-                  break;
+            case "bolean":
+                $data.=tag("text", $value['Field'],$value['Null'],$value['Type']);
+                break;
                 // default:
                 // $data.="<input type='not' name='not'/>";
                 // break;

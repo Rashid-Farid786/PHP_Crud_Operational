@@ -2,7 +2,7 @@
 
 if(!$this->con->error){
 $this->data="
-<table class='crudtable table table-sm table-borderless table-responsive crudtable'>
+<table class='crudtable table table-sm table-borderless table-responsive-md crudtable'>
 <thead class='thead-dark w-100'>
 <tr>
 <th class='text-center'><input type='checkbox' id='check' onclick='checkbox()'/></th>";
